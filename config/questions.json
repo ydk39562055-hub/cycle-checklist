@@ -1,0 +1,940 @@
+{
+ "phases": [
+  "침체",
+  "회복",
+  "확장",
+  "둔화"
+ ],
+ "questions": [
+  {
+   "seq": 1,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "침체",
+   "indicator_id": "gdp",
+   "indicator_name": "실질 GDP",
+   "text": "실질 GDP 증가율이 하락 추세거나, 6개월 이내에 크게 감소했는가?",
+   "weight": 1,
+   "qtypes": [
+    "downtrend",
+    "drop6m"
+   ]
+  },
+  {
+   "seq": 2,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "회복",
+   "indicator_id": "gdp",
+   "indicator_name": "실질 GDP",
+   "text": "실질 GDP 증가율이 바닥을 기록하는 모습을 보이거나, 상승 전환했는가?",
+   "weight": 1,
+   "qtypes": [
+    "trough"
+   ]
+  },
+  {
+   "seq": 3,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "확장",
+   "indicator_id": "gdp",
+   "indicator_name": "실질 GDP",
+   "text": "실질 GDP 증가율이 상승추세거나, 상승 추세 이후 높은 수준을 유지하는가?",
+   "weight": 1,
+   "qtypes": [
+    "uptrend",
+    "high_level"
+   ]
+  },
+  {
+   "seq": 4,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "둔화",
+   "indicator_id": "gdp",
+   "indicator_name": "실질 GDP",
+   "text": "실질 GDP 증가율이 고점을 기록하는 모습을 보이거나, 하락 전환했는가?",
+   "weight": 1,
+   "qtypes": [
+    "peak"
+   ]
+  },
+  {
+   "seq": 5,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "침체",
+   "indicator_id": "indpro",
+   "indicator_name": "산업생산",
+   "text": "산업생산 증가율이 하락 추세거나, 6개월 이내에 크게 감소했는가?",
+   "weight": 1,
+   "qtypes": [
+    "downtrend",
+    "drop6m"
+   ]
+  },
+  {
+   "seq": 6,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "회복",
+   "indicator_id": "indpro",
+   "indicator_name": "산업생산",
+   "text": "산업생산 증가율이 반등했거나, 반등을 하지 않았더라도 증가율의 감소 추세가 멈췄는가?",
+   "weight": 1,
+   "qtypes": [
+    "rebound",
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 7,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "확장",
+   "indicator_id": "indpro",
+   "indicator_name": "산업생산",
+   "text": "산업생산 증가율이 상승 추세거나, 상승 추세 이후 높은 수준을 유지하는가?",
+   "weight": 1,
+   "qtypes": [
+    "uptrend",
+    "high_level"
+   ]
+  },
+  {
+   "seq": 8,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "둔화",
+   "indicator_id": "indpro",
+   "indicator_name": "산업생산",
+   "text": "산업생산 증가율이 고점을 기록하는 모습을 보이거나, 하락 전환했는가?",
+   "weight": 1,
+   "qtypes": [
+    "peak"
+   ]
+  },
+  {
+   "seq": 9,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "침체",
+   "indicator_id": "tcu",
+   "indicator_name": "설비가동률",
+   "text": "설비가동률이 감소 추세인가?",
+   "weight": 1,
+   "qtypes": [
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 10,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "회복",
+   "indicator_id": "tcu",
+   "indicator_name": "설비가동률",
+   "text": "설비가동률이 저점을 기록했거나, 6개월 이내에 사이클 상에서 낮은 수준인가?",
+   "weight": 1,
+   "qtypes": [
+    "trough",
+    "low_level"
+   ]
+  },
+  {
+   "seq": 11,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "확장",
+   "indicator_id": "tcu",
+   "indicator_name": "설비가동률",
+   "text": "설비가동률이 상승 추세인가?",
+   "weight": 1,
+   "qtypes": [
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 12,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "둔화",
+   "indicator_id": "tcu",
+   "indicator_name": "설비가동률",
+   "text": "설비가동률이 고점을 기록했거나 최근 사이클 상에서 높은 수준인가?",
+   "weight": 1,
+   "qtypes": [
+    "peak",
+    "high_level"
+   ]
+  },
+  {
+   "seq": 13,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "침체",
+   "indicator_id": "ism",
+   "indicator_name": "ISM 제조업 PMI",
+   "text": "ISM 제조업 PMI가 하락 추세인가?",
+   "weight": 1,
+   "qtypes": [
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 14,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "회복",
+   "indicator_id": "ism",
+   "indicator_name": "ISM 제조업 PMI",
+   "text": "ISM 제조업 PMI가 바닥을 기록했거나 바닥에서 상승 추세인가?",
+   "weight": 1,
+   "qtypes": [
+    "trough",
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 15,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "확장",
+   "indicator_id": "ism",
+   "indicator_name": "ISM 제조업 PMI",
+   "text": "ISM 제조업 PMI가 상승 추세이거나 고점을 기록했는가?",
+   "weight": 1,
+   "qtypes": [
+    "peak",
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 16,
+   "category": "총생산",
+   "category_raw": "총생산 (성장)",
+   "phase": "둔화",
+   "indicator_id": "ism",
+   "indicator_name": "ISM 제조업 PMI",
+   "text": "ISM 제조업 PMI가 고점을 기록했는가? 또는 하락 추세지만 최근 사이클 상에서 높은 수준인가?",
+   "weight": 1,
+   "qtypes": [
+    "peak",
+    "downtrend",
+    "high_level"
+   ]
+  },
+  {
+   "seq": 17,
+   "category": "노동시장",
+   "category_raw": "노동시장",
+   "phase": "침체",
+   "indicator_id": "payems",
+   "indicator_name": "비농업 취업자수",
+   "text": "비농업 취업자수 증가율이 하락 추세인가?",
+   "weight": 1,
+   "qtypes": [
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 18,
+   "category": "노동시장",
+   "category_raw": "노동시장",
+   "phase": "회복",
+   "indicator_id": "payems",
+   "indicator_name": "비농업 취업자수",
+   "text": "비농업 취업자수 증가율의 하락 추세가 주춤하거나 바닥을 기록했는가?",
+   "weight": 1,
+   "qtypes": [
+    "trough",
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 19,
+   "category": "노동시장",
+   "category_raw": "노동시장",
+   "phase": "확장",
+   "indicator_id": "payems",
+   "indicator_name": "비농업 취업자수",
+   "text": "비농업 취업자수 증가율이 상승 추세인가?",
+   "weight": 1,
+   "qtypes": [
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 20,
+   "category": "노동시장",
+   "category_raw": "노동시장",
+   "phase": "둔화",
+   "indicator_id": "payems",
+   "indicator_name": "비농업 취업자수",
+   "text": "비농업 취업자수 증가율의 상승 추세가 주춤하거나 고점을 기록했는가?",
+   "weight": 1,
+   "qtypes": [
+    "peak",
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 21,
+   "category": "노동시장",
+   "category_raw": "노동시장",
+   "phase": "침체",
+   "indicator_id": "unrate",
+   "indicator_name": "실업률",
+   "text": "실업률이 상승 추세를 보이거나, 하락 추세였다면 하락 중 경제 성장이 둔화되며 추세가 주춤하는 모습을 보이는가?",
+   "weight": 1,
+   "qtypes": [
+    "uptrend",
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 22,
+   "category": "노동시장",
+   "category_raw": "노동시장",
+   "phase": "회복",
+   "indicator_id": "unrate",
+   "indicator_name": "실업률",
+   "text": "실업률의 상승 추세가 주춤하거나, 고점을 기록했는가?",
+   "weight": 1,
+   "qtypes": [
+    "peak",
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 23,
+   "category": "노동시장",
+   "category_raw": "노동시장",
+   "phase": "확장",
+   "indicator_id": "unrate",
+   "indicator_name": "실업률",
+   "text": "실업률이 하락 추세인가?",
+   "weight": 1,
+   "qtypes": [
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 24,
+   "category": "노동시장",
+   "category_raw": "노동시장",
+   "phase": "둔화",
+   "indicator_id": "unrate",
+   "indicator_name": "실업률",
+   "text": "실업률의 하락추세가 주춤하거나, 최근 사이클 상에서 가장 낮은 수준을 기록했는가?",
+   "weight": 1,
+   "qtypes": [
+    "downtrend",
+    "low_level"
+   ]
+  },
+  {
+   "seq": 25,
+   "category": "노동시장",
+   "category_raw": "노동시장",
+   "phase": "침체",
+   "indicator_id": "icsa",
+   "indicator_name": "주간 실업수당 청구건수",
+   "text": "주간 실업수당 청구건수가 상승 추세인가?",
+   "weight": 1,
+   "qtypes": [
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 26,
+   "category": "노동시장",
+   "category_raw": "노동시장",
+   "phase": "회복",
+   "indicator_id": "icsa",
+   "indicator_name": "주간 실업수당 청구건수",
+   "text": "주간 실업수당 청구건수가 고점을 기록했거나 하락 추세인가?",
+   "weight": 1,
+   "qtypes": [
+    "peak",
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 27,
+   "category": "노동시장",
+   "category_raw": "노동시장",
+   "phase": "확장",
+   "indicator_id": "icsa",
+   "indicator_name": "주간 실업수당 청구건수",
+   "text": "주간 실업수당 청구건수가 하락 추세거나 하락 추세가 아닌 경우 최근 사이클 상에서 낮은 수준인가?",
+   "weight": 1,
+   "qtypes": [
+    "downtrend",
+    "low_level"
+   ]
+  },
+  {
+   "seq": 28,
+   "category": "노동시장",
+   "category_raw": "노동시장",
+   "phase": "둔화",
+   "indicator_id": "icsa",
+   "indicator_name": "주간 실업수당 청구건수",
+   "text": "주간 실업수당 청구건수가 바닥을 기록했는가? 또는 상승 추세지만 최근 사이클 상에서 낮은 수준인가?",
+   "weight": 1,
+   "qtypes": [
+    "trough",
+    "uptrend",
+    "low_level"
+   ]
+  },
+  {
+   "seq": 29,
+   "category": "소비자",
+   "category_raw": "소비자",
+   "phase": "침체",
+   "indicator_id": "pi",
+   "indicator_name": "개인 소득",
+   "text": "개인 소득 증가율이 가파르게 하락하거나, 과거부터의 하락 추세가 이어지는가?",
+   "weight": 1,
+   "qtypes": [
+    "downtrend",
+    "drop6m"
+   ]
+  },
+  {
+   "seq": 30,
+   "category": "소비자",
+   "category_raw": "소비자",
+   "phase": "회복",
+   "indicator_id": "pi",
+   "indicator_name": "개인 소득",
+   "text": "개인 소득 증가율의 하락세가 주춤하는 모습을 보이거나, 바닥에서 반등했는가?",
+   "weight": 1,
+   "qtypes": [
+    "trough",
+    "rebound"
+   ]
+  },
+  {
+   "seq": 31,
+   "category": "소비자",
+   "category_raw": "소비자",
+   "phase": "확장",
+   "indicator_id": "pi",
+   "indicator_name": "개인 소득",
+   "text": "개인 소득 증가율이 상승하는 추세거나, 과거부터의 상승 추세가 이어지는가?",
+   "weight": 1,
+   "qtypes": [
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 32,
+   "category": "소비자",
+   "category_raw": "소비자",
+   "phase": "둔화",
+   "indicator_id": "pi",
+   "indicator_name": "개인 소득",
+   "text": "개인소득 증가율이 고점을 기록했거나, 고점을 기록하고 하락 추세인가?",
+   "weight": 1,
+   "qtypes": [
+    "peak",
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 33,
+   "category": "소비자",
+   "category_raw": "소비자",
+   "phase": "침체",
+   "indicator_id": "umcsent",
+   "indicator_name": "미시간 소비자 심리지수",
+   "text": "미시간 소비자 심리지수가 하락 추세거나 6개월 이내에 크게 하락했는가?",
+   "weight": 1,
+   "qtypes": [
+    "downtrend",
+    "drop6m"
+   ]
+  },
+  {
+   "seq": 34,
+   "category": "소비자",
+   "category_raw": "소비자",
+   "phase": "회복",
+   "indicator_id": "umcsent",
+   "indicator_name": "미시간 소비자 심리지수",
+   "text": "미시간 소비자 심리지수가 바닥에서 반등했거나 상승 추세인가?",
+   "weight": 1,
+   "qtypes": [
+    "trough",
+    "rebound",
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 35,
+   "category": "소비자",
+   "category_raw": "소비자",
+   "phase": "확장",
+   "indicator_id": "umcsent",
+   "indicator_name": "미시간 소비자 심리지수",
+   "text": "미시간 소비자 심리지수가 상승 추세인가?",
+   "weight": 1,
+   "qtypes": [
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 36,
+   "category": "소비자",
+   "category_raw": "소비자",
+   "phase": "둔화",
+   "indicator_id": "umcsent",
+   "indicator_name": "미시간 소비자 심리지수",
+   "text": "미시간 소비자 심리지수가 고점을 기록했거나 하락 추세인가?",
+   "weight": 1,
+   "qtypes": [
+    "peak",
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 37,
+   "category": "주택&건설",
+   "category_raw": "주택&건설",
+   "phase": "침체",
+   "indicator_id": "permit",
+   "indicator_name": "주택 건설허가건수",
+   "text": "주택 건설허가건수 증가율이 하락 추세거나 6개월 이내에 크게 감소했는가? 또는 증가율이 바닥을 기록했는가?",
+   "weight": 1,
+   "qtypes": [
+    "trough",
+    "downtrend",
+    "drop6m"
+   ]
+  },
+  {
+   "seq": 38,
+   "category": "주택&건설",
+   "category_raw": "주택&건설",
+   "phase": "회복",
+   "indicator_id": "permit",
+   "indicator_name": "주택 건설허가건수",
+   "text": "주택 건설허가건수 증가율이 상승 추세인가?",
+   "weight": 1,
+   "qtypes": [
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 39,
+   "category": "주택&건설",
+   "category_raw": "주택&건설",
+   "phase": "확장",
+   "indicator_id": "permit",
+   "indicator_name": "주택 건설허가건수",
+   "text": "주택 건설허가건수 증가율이 고점을 기록했거나 최근 사이클 상에서 가장 높은 수준인가?",
+   "weight": 1,
+   "qtypes": [
+    "peak",
+    "high_level"
+   ]
+  },
+  {
+   "seq": 40,
+   "category": "주택&건설",
+   "category_raw": "주택&건설",
+   "phase": "둔화",
+   "indicator_id": "permit",
+   "indicator_name": "주택 건설허가건수",
+   "text": "주택 건설허가건수 증가율이 하락 추세거나, 최근 사이클 상에서 가장 낮은 수준인가?",
+   "weight": 1,
+   "qtypes": [
+    "downtrend",
+    "low_level"
+   ]
+  },
+  {
+   "seq": 41,
+   "category": "통화량&금리",
+   "category_raw": "통화량&금리 (2점)",
+   "phase": "침체",
+   "indicator_id": "fedfunds",
+   "indicator_name": "기준금리",
+   "text": "기준금리가 상승추세를 보이거나, 6개월 이내에 피크아웃했는가?",
+   "weight": 2,
+   "qtypes": [
+    "peak",
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 42,
+   "category": "통화량&금리",
+   "category_raw": "통화량&금리 (2점)",
+   "phase": "회복",
+   "indicator_id": "fedfunds",
+   "indicator_name": "기준금리",
+   "text": "기준금리가 고점대비 하락했거나 하락 추세인가?",
+   "weight": 2,
+   "qtypes": [
+    "peak",
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 43,
+   "category": "통화량&금리",
+   "category_raw": "통화량&금리 (2점)",
+   "phase": "확장",
+   "indicator_id": "fedfunds",
+   "indicator_name": "기준금리",
+   "text": "기준금리가 하락 추세 또는 중립적인 추세(=동결)를 유지하고 있는가?",
+   "weight": 2,
+   "qtypes": [
+    "downtrend",
+    "neutral"
+   ]
+  },
+  {
+   "seq": 44,
+   "category": "통화량&금리",
+   "category_raw": "통화량&금리 (2점)",
+   "phase": "둔화",
+   "indicator_id": "fedfunds",
+   "indicator_name": "기준금리",
+   "text": "기준금리가 저점대비 상승했거나 상승 추세인가?",
+   "weight": 2,
+   "qtypes": [
+    "trough",
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 45,
+   "category": "통화량&금리",
+   "category_raw": "통화량&금리 (2점)",
+   "phase": "침체",
+   "indicator_id": "m2real",
+   "indicator_name": "실질 M2",
+   "text": "시중의 통화량 (실질 M2) 증가율이 6개월 이내에까지 하락 추세를 보이거나 보였는가?",
+   "weight": 2,
+   "qtypes": [
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 46,
+   "category": "통화량&금리",
+   "category_raw": "통화량&금리 (2점)",
+   "phase": "회복",
+   "indicator_id": "m2real",
+   "indicator_name": "실질 M2",
+   "text": "시중의 통화량 (실질 M2) 증가율이 6개월 이내에 저점대비 반등했거나 증가 추세인가?",
+   "weight": 2,
+   "qtypes": [
+    "trough",
+    "rebound",
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 47,
+   "category": "통화량&금리",
+   "category_raw": "통화량&금리 (2점)",
+   "phase": "확장",
+   "indicator_id": "m2real",
+   "indicator_name": "실질 M2",
+   "text": "시중의 통화량 (실질 M2) 증가율이 상승 추세를 보이거나 높아진 상황을 유지하고 있는가?",
+   "weight": 2,
+   "qtypes": [
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 48,
+   "category": "통화량&금리",
+   "category_raw": "통화량&금리 (2점)",
+   "phase": "둔화",
+   "indicator_id": "m2real",
+   "indicator_name": "실질 M2",
+   "text": "시중의 통화량 (실질 M2) 증가율이 하락 추세인가?",
+   "weight": 2,
+   "qtypes": [
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 49,
+   "category": "통화량&금리",
+   "category_raw": "통화량&금리 (2점)",
+   "phase": "침체",
+   "indicator_id": "t10y2y",
+   "indicator_name": "장단기 금리차",
+   "text": "1년 이내에 장단기 금리차가 역전된 적 있는가?",
+   "weight": 2,
+   "qtypes": [
+    "invert"
+   ]
+  },
+  {
+   "seq": 50,
+   "category": "통화량&금리",
+   "category_raw": "통화량&금리 (2점)",
+   "phase": "회복",
+   "indicator_id": "t10y2y",
+   "indicator_name": "장단기 금리차",
+   "text": "단기금리가 장기금리보다 빠르게 하락하면서 장단기 금리차가 상승하는 추세를 보이고 있는가?",
+   "weight": 2,
+   "qtypes": [
+    "uptrend",
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 51,
+   "category": "통화량&금리",
+   "category_raw": "통화량&금리 (2점)",
+   "phase": "확장",
+   "indicator_id": "t10y2y",
+   "indicator_name": "장단기 금리차",
+   "text": "장단기 금리차가 피크아웃했거나 하락 추세인가?",
+   "weight": 2,
+   "qtypes": [
+    "peak",
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 52,
+   "category": "통화량&금리",
+   "category_raw": "통화량&금리 (2점)",
+   "phase": "둔화",
+   "indicator_id": "t10y2y",
+   "indicator_name": "장단기 금리차",
+   "text": "장단기 금리차가 하락하는 추세를 보이거나, 하락한 수준을 유지하고 있는가?",
+   "weight": 2,
+   "qtypes": [
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 53,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "침체",
+   "indicator_id": "gspc",
+   "indicator_name": "주가지수",
+   "text": "주식은 조정장 또는 하락장이 진행 중인가?",
+   "weight": 2,
+   "qtypes": [
+    "other"
+   ]
+  },
+  {
+   "seq": 54,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "회복",
+   "indicator_id": "gspc",
+   "indicator_name": "주가지수",
+   "text": "주식은 저점을 기록한 이후 반등하는 모습을 보이는가?",
+   "weight": 2,
+   "qtypes": [
+    "trough",
+    "rebound"
+   ]
+  },
+  {
+   "seq": 55,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "확장",
+   "indicator_id": "gspc",
+   "indicator_name": "주가지수",
+   "text": "주식은 이미 강세장이 진행중인가? 이미 신고점을 갱신해 상승중이라면 이는 확장기의 강한 신호가 된다.",
+   "weight": 2,
+   "qtypes": [
+    "other"
+   ]
+  },
+  {
+   "seq": 56,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "둔화",
+   "indicator_id": "gspc",
+   "indicator_name": "주가지수",
+   "text": "주식은 6개월 이내에 조정을 경험했거나, 상승폭이 둔화되면서 강세장이 끝나가는 모습을 보이고 있는가?",
+   "weight": 2,
+   "qtypes": [
+    "other"
+   ]
+  },
+  {
+   "seq": 57,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "침체",
+   "indicator_id": "dgs10",
+   "indicator_name": "장기채 금리",
+   "text": "장기채 금리가 피크아웃했거나 하락 중인가?",
+   "weight": 2,
+   "qtypes": [
+    "peak",
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 58,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "회복",
+   "indicator_id": "dgs10",
+   "indicator_name": "장기채 금리",
+   "text": "완화적인 통화정책과 풍부한 유동성의 영향을 받아 장기채 금리가 하락하는 모습을 보이거나, 하락한 수준을 유지하는가?",
+   "weight": 2,
+   "qtypes": [
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 59,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "확장",
+   "indicator_id": "dgs10",
+   "indicator_name": "장기채 금리",
+   "text": "경제성장에 대한 기대감으로 장기채 금리가 상승하고 있거나 중립적인 흐름을 보여주는가?",
+   "weight": 2,
+   "qtypes": [
+    "uptrend",
+    "neutral"
+   ]
+  },
+  {
+   "seq": 60,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "둔화",
+   "indicator_id": "dgs10",
+   "indicator_name": "장기채 금리",
+   "text": "장기채 금리가 상승하면서 경제에 본격적인 긴축효과를 주고 있는가?",
+   "weight": 2,
+   "qtypes": [
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 61,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "침체",
+   "indicator_id": "spgsci",
+   "indicator_name": "원자재 가격",
+   "text": "경제 활동이 둔화되면서 원자재 수요가 감소해 원자재 가격이 하락하는 중인가?",
+   "weight": 1,
+   "qtypes": [
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 62,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "회복",
+   "indicator_id": "spgsci",
+   "indicator_name": "원자재 가격",
+   "text": "원자재 가격이 중립적인 모습을 보이는가?",
+   "weight": 1,
+   "qtypes": [
+    "neutral"
+   ]
+  },
+  {
+   "seq": 63,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "확장",
+   "indicator_id": "spgsci",
+   "indicator_name": "원자재 가격",
+   "text": "경제 활동이 증가하면서 원자재 가격이 상승하는 모습을 보이는가?",
+   "weight": 1,
+   "qtypes": [
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 64,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "둔화",
+   "indicator_id": "spgsci",
+   "indicator_name": "원자재 가격",
+   "text": "원자재 가격이 상승하고 있는가?",
+   "weight": 1,
+   "qtypes": [
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 65,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "침체",
+   "indicator_id": "bamlh0a0",
+   "indicator_name": "하이일드 스프레드",
+   "text": "하이일드 스프레드가 상승하거나 6개월 이내에 고점을 기록했는가?",
+   "weight": 2,
+   "qtypes": [
+    "peak",
+    "uptrend"
+   ]
+  },
+  {
+   "seq": 66,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "회복",
+   "indicator_id": "bamlh0a0",
+   "indicator_name": "하이일드 스프레드",
+   "text": "하이일드 스프레드가 고점에서 하락했거나 하락 추세인가?",
+   "weight": 2,
+   "qtypes": [
+    "downtrend"
+   ]
+  },
+  {
+   "seq": 67,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "확장",
+   "indicator_id": "bamlh0a0",
+   "indicator_name": "하이일드 스프레드",
+   "text": "하이일드 스프레드의 하락 추세가 이어지고 있거나 낮은 수준을 유지하는가?",
+   "weight": 2,
+   "qtypes": [
+    "downtrend",
+    "low_level"
+   ]
+  },
+  {
+   "seq": 68,
+   "category": "자산군 측면",
+   "category_raw": "자산군 측면 (2점 / 원자재는 1점)",
+   "phase": "둔화",
+   "indicator_id": "bamlh0a0",
+   "indicator_name": "하이일드 스프레드",
+   "text": "하이일드 스프레드가 낮은 수준을 유지하고 있거나 6개월 이내에 저점에서 반등했는가?",
+   "weight": 2,
+   "qtypes": [
+    "trough",
+    "rebound",
+    "low_level"
+   ]
+  }
+ ]
+}

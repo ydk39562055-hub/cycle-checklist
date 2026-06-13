@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>경기순환 체크리스트</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1d212b; --line:#2a2f3a;
+    --txt:#e6e8ec; --mut:#8b93a3; --mut2:#5d6470;
+    --침체:#e5544b; --회복:#e0a82e; --확장:#3fae6b; --둔화:#4a86e8;
+    --yes:#3fae6b; --no:#e5544b; --maybe:#8b93a3;
+    --accent:#6ea8fe;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:"Segoe UI","Malgun Gothic",sans-serif;font-size:14px;line-height:1.5}
+  header{position:sticky;top:0;z-index:20;background:#0c0e12;border-bottom:1px solid var(--line);padding:10px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header h1{font-size:16px;margin:0;font-weight:650}
+  .asof{color:var(--mut);font-size:12px}
+  .tabs{display:flex;gap:4px;margin-left:auto}
+  .tabs button{background:transparent;border:1px solid transparent;color:var(--mut);padding:7px 14px;border-radius:8px;cursor:pointer;font-size:13px}
+  .tabs button.on{background:var(--panel2);color:var(--txt);border-color:var(--line)}
+  main{max-width:1180px;margin:0 auto;padding:18px}
+  .banner{background:#3a2a12;border:1px solid #6a4d1c;color:#f0c987;padding:8px 12px;border-radius:8px;margin-bottom:14px;font-size:13px;display:none}
+  .row{display:flex;gap:18px;align-items:flex-start}
+  .col-main{flex:1;min-width:0}
+  .col-side{width:340px;flex:none}
+  @media(max-width:980px){.row{flex-direction:column}.col-side{width:100%}}
+
+  .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  select,input[type=month],input[type=text],textarea{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:7px;padding:7px 9px;font-family:inherit;font-size:13px}
+  button.btn{background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 12px;border-radius:7px;cursor:pointer;font-size:13px}
+  button.btn:hover{border-color:var(--mut2)}
+  button.primary{background:#27406e;border-color:#365a99;color:#dce7ff}
+  button.primary:hover{background:#2e4c82}
+
+  .ind{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+  .ind h3{margin:0 0 2px;font-size:15px;display:flex;align-items:center;gap:8px}
+  .cat-tag{font-size:11px;color:var(--mut);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+  .info{cursor:pointer;color:var(--mut);border:1px solid var(--line);border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:11px}
+  .tip{display:none;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:11px 13px;margin:8px 0;font-size:12.5px;color:var(--mut)}
+  .tip.show{display:block}
+  .tip b{color:var(--txt)}
+  .tip .pf{display:grid;grid-template-columns:54px 1fr;gap:3px 8px;margin-top:7px}
+  .tip .pf .ph{font-weight:600}
+  canvas{width:100%;height:160px;display:block;margin:8px 0 4px;cursor:crosshair}
+  .lastval{margin-left:auto;font-size:13px;color:var(--txt)} .lastval small{color:var(--mut)} .lastval b{color:var(--accent)}
+  .ind h3{justify-content:flex-start}
+  .period{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--mut)}
+  .pbtn{background:var(--panel2);border:1px solid var(--line);color:var(--mut);padding:4px 9px;border-radius:6px;cursor:pointer;font-size:12px}
+  .pbtn.on{background:#27406e;border-color:#365a99;color:#dce7ff}
+  .manual-note{background:#2a2233;border:1px dashed #5a4a6a;border-radius:8px;padding:10px;color:#d3b8e6;font-size:12.5px;margin:8px 0}
+  .srcrow{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+  a.srcbtn{display:inline-block;background:#3a2f4a;border:1px solid #6a5a80;color:#e7d8f5;text-decoration:none;padding:5px 10px;border-radius:7px;font-size:12px}
+  a.srcbtn:hover{background:#473a5c;border-color:#8a76a6}
+  .qs{margin-top:6px}
+  .q{display:flex;gap:10px;align-items:flex-start;padding:7px 8px;border-radius:8px}
+  .q:hover{background:var(--panel2)}
+  .q.disagree{outline:1px solid #7a5; outline-offset:-1px}
+  .q input[type=checkbox]{margin-top:3px;width:17px;height:17px;flex:none;accent-color:var(--accent)}
+  .q .qbody{flex:1;min-width:0}
+  .phase-chip{font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:5px;margin-right:6px;vertical-align:1px}
+  .qtext{font-size:13px}
+  .sug{font-size:11.5px;color:var(--mut);margin-top:2px}
+  .sug .v{font-weight:700;margin-right:5px}
+  .v.그렇다{color:var(--yes)} .v.아니다{color:var(--no)} .v.애매{color:var(--maybe)} .v.수동{color:var(--mut2)}
+  .w2{font-size:10px;color:var(--mut2);border:1px solid var(--line);border-radius:4px;padding:0 4px;margin-left:6px}
+
+  /* 집계 패널 */
+  .agg{position:sticky;top:64px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .agg h3{margin:0 0 10px;font-size:14px}
+  .scoregrid{display:grid;grid-template-columns:1fr auto auto auto;gap:6px 10px;align-items:center;font-size:13px}
+  .scoregrid .hd{color:var(--mut);font-size:11px}
+  .bar{height:9px;border-radius:5px;background:var(--panel2);overflow:hidden;margin-top:8px}
+  .pname{font-weight:700}
+  .pname.침체{color:var(--침체)} .pname.회복{color:var(--회복)} .pname.확장{color:var(--확장)} .pname.둔화{color:var(--둔화)}
+  .cli-box{margin-top:14px;padding:10px;border-radius:9px;background:var(--panel2);font-size:12.5px}
+  .match-ok{color:var(--yes);font-weight:700} .match-no{color:var(--no);font-weight:700}
+  .big-prob{display:flex;gap:6px;margin:10px 0}
+  .big-prob .pp{flex:1;text-align:center;background:var(--panel2);border-radius:8px;padding:8px 4px}
+  .big-prob .pp .n{font-size:18px;font-weight:750}
+  .big-prob .pp .l{font-size:11px;color:var(--mut)}
+
+  table{border-collapse:collapse;width:100%;font-size:13px}
+  th,td{border:1px solid var(--line);padding:6px 8px;text-align:right}
+  th{color:var(--mut);font-weight:600;background:var(--panel2)}
+  td.l,th.l{text-align:left}
+  .hist-bar{display:flex;height:26px;border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+  .hist-bar span{display:block}
+  .mono{font-variant-numeric:tabular-nums}
+  .seg{margin-bottom:26px}
+  .seg h3{font-size:14px;border-left:3px solid var(--accent);padding-left:8px;margin:0 0 10px}
+  .lens{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .lens label{display:block;font-size:12px;color:var(--mut);margin-bottom:4px}
+  .lens textarea{width:100%;min-height:64px;resize:vertical}
+  .chain-row{display:flex;gap:8px;margin-bottom:6px}
+  .chain-row input{flex:1}
+  .scn-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+  .scn-card .meta{font-size:11px;color:var(--mut)}
+  .req{color:var(--침체)}
+  .muted{color:var(--mut)}
+  .disg-list{margin-top:10px}
+  .disg-item{background:var(--panel2);border-radius:8px;padding:8px 10px;margin-bottom:6px;font-size:12.5px}
+  .foottip{color:var(--mut2);font-size:11px;margin-top:6px}
+  .pill{display:inline-block;font-size:11px;border:1px solid var(--line);border-radius:20px;padding:2px 9px;color:var(--mut)}
+</style>
+</head>
+<body>
+<header>
+  <h1>경기순환 체크리스트</h1>
+  <span class="asof" id="asof"></span>
+  <div class="tabs">
+    <button data-tab="check" class="on">월간 체크</button>
+    <button data-tab="hist">히스토리</button>
+    <button data-tab="scn">시나리오</button>
+    <button data-tab="asset">자산군</button>
+    <button id="syncBtn" title="기기 간 동기화 코드">🔗 동기화</button>
+  </div>
+</header>
+<main>
+  <div class="banner" id="banner"></div>
+  <div id="tab-check"></div>
+  <div id="tab-hist" style="display:none"></div>
+  <div id="tab-scn" style="display:none"></div>
+  <div id="tab-asset" style="display:none"></div>
+</main>
+
+<script>
+const APP_DATA = /*__APP_DATA__*/null;
+const PHASES = APP_DATA.phases;                 // ['침체','회복','확장','둔화']
+const PH_ORDER = ['침체','회복','확장','둔화'];   // 원형 인접 순서
+const CAT_ORDER = ['총생산','노동시장','소비자','주택&건설','통화량&금리','자산군 측면'];
+// 수동 지표(무료 자동데이터 없음) 확인용 외부 사이트
+const MANUAL_LINKS = {
+  ism: [
+    {name:'MacroMicro · 장기 추세 차트', url:'https://en.macromicro.me/charts/54/ism'},
+    {name:'Trading Economics · 값·이력', url:'https://tradingeconomics.com/united-states/manufacturing-pmi'},
+    {name:'Investing.com · 실제/예상', url:'https://www.investing.com/economic-calendar/ism-manufacturing-pmi-173'},
+    {name:'ISM 공식 보고서', url:'https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/'},
+  ],
+};
+// ---------- 저장 백엔드: Supabase 클라우드 동기화 (로그인 없는 '동기화 코드' 방식, 거래일지와 동일) ----------
+const SUPA_URL = 'https://oxogtsfxdjbctzehxvae.supabase.co';
+const SUPA_KEY = 'sb_publishable_3vXShFC5dKvMqzUy1KkyGQ_sF0SzUY2';   // anon(공개) 키 — 노출돼도 안전, 보호는 코드 비밀성+RPC
+const SYNC_RPC = SUPA_URL + '/rest/v1/rpc/';
+const SYNC_HEAD = { apikey:SUPA_KEY, Authorization:'Bearer '+SUPA_KEY, 'Content-Type':'application/json' };
+const CS = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+function genCode(){ const a=new Uint8Array(20); crypto.getRandomValues(a); let s=''; for(const b of a) s+=CS[b%CS.length]; return s.replace(/(.{5})(?=.)/g,'$1-'); }
+const cleanCode = c => (c||'').replace(/[^0-9A-Za-z]/g,'');
+async function syncRpc(fn, body){
+  const r = await fetch(SYNC_RPC+fn,{method:'POST',headers:SYNC_HEAD,body:JSON.stringify(body)});
+  if(!r.ok) throw new Error('sync/'+fn+' '+r.status);
+  const t=await r.text(); return t?JSON.parse(t):null;
+}
+// 경기순환 데이터는 sync_id 에 'cyc:' 네임스페이스를 붙여 거래일지와 분리
+async function syncPull(code){ const rows=await syncRpc('sync_pull',{p_sync_id:'cyc:'+cleanCode(code)}); return (Array.isArray(rows)&&rows[0])?rows[0]:null; }
+async function syncPush(code,data){ return await syncRpc('sync_push',{p_sync_id:'cyc:'+cleanCode(code),p_data:data}); }
+
+let SYNC_CODE = localStorage.getItem('cyc_sync_code') || '';
+let ONLINE = false;                                        // Supabase 연결됨?
+let STORE = { records:{}, scenarios:[], asset_returns:null }; // 전체 데이터 한 덩어리
+
+function cacheStore(){ try{ localStorage.setItem('cyc_store', JSON.stringify(STORE)); }catch(e){} }
+function loadCache(){ try{ const s=JSON.parse(localStorage.getItem('cyc_store')||'null'); if(s) STORE=Object.assign({records:{},scenarios:[],asset_returns:null},s); }catch(e){} }
+
+async function initStore(){
+  loadCache();
+  if(!SYNC_CODE){ SYNC_CODE=genCode(); localStorage.setItem('cyc_sync_code',SYNC_CODE); }
+  try{
+    const row=await syncPull(SYNC_CODE); ONLINE=true;
+    if(row && row.data){ STORE=Object.assign({records:{},scenarios:[],asset_returns:null},row.data); cacheStore(); }
+    else { await syncPush(SYNC_CODE, STORE); }   // 새 코드면 현재(캐시) 내용을 올려둠
+  }catch(e){ ONLINE=false; }
+  if(STORE.asset_returns==null) STORE.asset_returns=APP_DATA.asset_returns||{};
+  updateSyncBanner();
+}
+async function persistStore(){
+  cacheStore();
+  if(!ONLINE && SYNC_CODE){ try{ await syncPull(SYNC_CODE); ONLINE=true; }catch(e){} }
+  if(ONLINE){ try{ await syncPush(SYNC_CODE,STORE); updateSyncBanner(); return true; }catch(e){ ONLINE=false; } }
+  updateSyncBanner(); return false;
+}
+async function applyCode(code){   // 다른 기기 코드 입력 → 그 데이터 가져오기
+  const c=cleanCode(code); if(c.length<10) { toast('코드가 올바르지 않습니다'); return; }
+  try{
+    const row=await syncPull(code); ONLINE=true;
+    SYNC_CODE=code.replace(/(.{5})(?=.)/g,'$1-'); localStorage.setItem('cyc_sync_code',SYNC_CODE);
+    STORE = row && row.data ? Object.assign({records:{},scenarios:[],asset_returns:null},row.data) : STORE;
+    if(STORE.asset_returns==null) STORE.asset_returns=APP_DATA.asset_returns||{};
+    cacheStore(); toast('동기화 코드 적용 완료 — 데이터를 불러왔습니다');
+    renderCheck(); await loadDraftOrRecord();
+  }catch(e){ toast('불러오기 실패: '+e.message); }
+}
+function updateSyncBanner(){
+  const b=document.getElementById('banner');
+  if(ONLINE){ b.style.display='none'; }
+  else { b.style.display='block';
+    b.innerHTML='⚠ 클라우드 동기화에 연결하지 못했습니다 — 인터넷을 확인하세요. 지금은 <b>이 기기(브라우저)에만</b> 저장됩니다.'; }
+}
+function openSyncUI(){
+  const code=SYNC_CODE||'(없음)';
+  const html=`<div style="position:fixed;inset:0;background:#000a;z-index:50;display:flex;align-items:center;justify-content:center" id="syncModal">
+    <div style="background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;max-width:420px;width:90%">
+      <h3 style="margin:0 0 8px">기기 간 동기화</h3>
+      <p class="muted" style="font-size:12.5px">이 코드를 다른 기기(폰 등)에서 입력하면 같은 기록을 봅니다. 코드를 아는 사람만 접근할 수 있으니 <b>남에게 공유하지 마세요.</b></p>
+      <div style="display:flex;gap:6px;margin:10px 0"><input id="myCode" type="text" readonly value="${code}" style="flex:1;font-family:monospace"><button class="btn" id="copyCode">복사</button></div>
+      <hr style="border-color:var(--line)">
+      <p class="muted" style="font-size:12.5px">다른 기기의 코드를 여기에 입력하면 그 기록을 가져옵니다(현재 이 기기 기록은 덮어쓰여요):</p>
+      <div style="display:flex;gap:6px"><input id="inCode" type="text" placeholder="코드 입력" style="flex:1;font-family:monospace"><button class="btn primary" id="useCode">불러오기</button></div>
+      <div style="text-align:right;margin-top:14px"><button class="btn" id="closeSync">닫기</button></div>
+    </div></div>`;
+  const d=ce('div'); d.innerHTML=html; document.body.appendChild(d.firstElementChild);
+  $('#copyCode').onclick=()=>{navigator.clipboard.writeText(SYNC_CODE);toast('코드 복사됨');};
+  $('#useCode').onclick=()=>{ const v=$('#inCode').value.trim(); if(v){applyCode(v); $('#syncModal').remove();} };
+  $('#closeSync').onclick=()=>$('#syncModal').remove();
+  $('#syncModal').onclick=e=>{ if(e.target.id==='syncModal') e.target.remove(); };
+}
+
+// ---------- 유틸 ----------
+const $ = (s,el=document)=>el.querySelector(s);
+const $$ = (s,el=document)=>[...el.querySelectorAll(s)];
+const ce = (t,c,h)=>{const e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e;};
+function curYM(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+function phaseColor(p){return getComputedStyle(document.documentElement).getPropertyValue('--'+p).trim();}
+
+// ---------- 차트(자체 canvas, 오프라인 동작) ----------
+const CHART_WINDOWS = [['1년',12],['5년',60],['10년',120]];
+let CHART_MONTHS = 60;          // 기본 5년
+const CHARTS = [];              // {cv, ser, color}
+
+function fmtVal(v, ser){
+  if(v==null) return '-';
+  const t=(ser&&ser.transform)||'';
+  if(t==='claims4w') return Math.round(v).toLocaleString()+'건';
+  if(t==='yoy')      return (v>=0?'+':'')+v.toFixed(1)+'%';
+  if(t==='price')    return v.toLocaleString(undefined,{maximumFractionDigits:1});
+  return v.toFixed(2);          // level (금리·심리지수 등)
+}
+
+function setupChart(cv, ser, color){
+  CHARTS.push({cv, ser, color:color||'#6ea8fe'});
+  redrawChart(cv, ser, color, -1);
+  cv.addEventListener('mousemove', e=>{
+    const m=cv._meta; if(!m||!m.n) return;
+    const rect=cv.getBoundingClientRect();
+    const mx=e.clientX-rect.left;
+    let idx=Math.round((mx-m.padL)/((m.W-m.padL-m.padR)||1)*(m.n-1));
+    idx=Math.max(0,Math.min(m.n-1,idx));
+    redrawChart(cv, ser, color, idx);
+  });
+  cv.addEventListener('mouseleave', ()=>redrawChart(cv, ser, color, -1));
+}
+function redrawAllCharts(){ CHARTS.forEach(c=>redrawChart(c.cv, c.ser, c.color, -1)); }
+
+function redrawChart(cv, ser, color, hoverIdx){
+  color = color||'#6ea8fe';
+  const full = (ser&&ser.points)||[];
+  const points = full.slice(-CHART_MONTHS);
+  const dpr = window.devicePixelRatio||1;
+  const W = cv.clientWidth, H = cv.clientHeight;
+  cv.width=W*dpr; cv.height=H*dpr;
+  const ctx = cv.getContext('2d'); ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  ctx.textBaseline='alphabetic';
+  if(points.length<2){ctx.fillStyle='#5d6470';ctx.font='12px sans-serif';ctx.fillText('데이터 없음',12,24);cv._meta={n:0};return;}
+  const vals = points.map(p=>p.v);
+  let mn=Math.min(...vals), mx=Math.max(...vals);
+  if(mn===mx){mn-=1;mx+=1;}
+  const pad=(mx-mn)*0.14; mn-=pad; mx+=pad;
+  const padL=46, padR=10, padT=10, padB=18;
+  const n=points.length;
+  const x=i=>padL+(W-padL-padR)*i/(n-1);
+  const y=v=>padT+(H-padT-padB)*(1-(v-mn)/(mx-mn));
+  // 추세 음영(최근 15개월, 보이는 구간 안에서)
+  const shadeN=Math.min(15, n-1);
+  ctx.fillStyle='rgba(110,168,254,0.10)';
+  ctx.fillRect(x(n-1-shadeN),padT,x(n-1)-x(n-1-shadeN),H-padT-padB);
+  // 0선
+  if(mn<0&&mx>0){ctx.strokeStyle='#3a4150';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(padL,y(0));ctx.lineTo(W-padR,y(0));ctx.stroke();}
+  // y축 라벨
+  ctx.fillStyle='#5d6470';ctx.font='10px sans-serif';ctx.textAlign='right';
+  [mx-pad,(mn+mx)/2,mn+pad].forEach(v=>{ctx.fillText(v.toFixed(Math.abs(v)>=100?0:1),padL-5,y(v)+3);});
+  // x축 연도
+  ctx.textAlign='center';
+  let lastYr=null;
+  points.forEach((p,i)=>{const yr=p.d.slice(0,4); if(yr!==lastYr){ if(n<=24 || i%12<1){ctx.fillText("'"+yr.slice(2),x(i),H-5);} lastYr=yr; }});
+  // 라인
+  ctx.strokeStyle=color;ctx.lineWidth=1.8;ctx.beginPath();
+  points.forEach((p,i)=>{i?ctx.lineTo(x(i),y(p.v)):ctx.moveTo(x(i),y(p.v));});ctx.stroke();
+  // 마지막 점 + 값
+  const lp=points[n-1];
+  ctx.fillStyle=color;ctx.beginPath();ctx.arc(x(n-1),y(lp.v),3,0,7);ctx.fill();
+  cv._meta={padL,padR,W,H,n,mn,mx,pts:points,xfn:x,yfn:y};
+  // 마우스 위치 크로스헤어 + 값 툴팁
+  if(hoverIdx>=0 && hoverIdx<n){
+    const hp=points[hoverIdx], hx=x(hoverIdx), hy=y(hp.v);
+    ctx.strokeStyle='rgba(230,232,236,0.25)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(hx,padT);ctx.lineTo(hx,H-padB);ctx.stroke();
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(hx,hy,3.5,0,7);ctx.fill();
+    const label=hp.d+'  '+fmtVal(hp.v,ser);
+    ctx.font='11px sans-serif'; const tw=ctx.measureText(label).width+12;
+    let bx=hx+8; if(bx+tw>W-2) bx=hx-8-tw;
+    ctx.fillStyle='rgba(20,24,32,0.95)';ctx.strokeStyle='#3a4150';
+    ctx.fillRect(bx,padT+2,tw,18);ctx.strokeRect(bx,padT+2,tw,18);
+    ctx.fillStyle='#e6e8ec';ctx.textAlign='left';ctx.fillText(label,bx+6,padT+15);
+  }
+}
+
+// ---------- 상태 ----------
+let CHECKS = {};        // {seq:true}
+let curMonth = curYM();
+
+function qById(){const m={}; APP_DATA.questions.forEach(q=>m[q.seq]=q); return m;}
+const QMAP = qById();
+
+// 지표별 문항 그룹
+function questionsByIndicator(){
+  const g={};
+  APP_DATA.indicators.forEach(ind=>g[ind.id]=[]);
+  APP_DATA.questions.forEach(q=>{(g[q.indicator_id]=g[q.indicator_id]||[]).push(q);});
+  Object.values(g).forEach(arr=>arr.sort((a,b)=>PH_ORDER.indexOf(a.phase)-PH_ORDER.indexOf(b.phase)));
+  return g;
+}
+
+// ---------- 집계 ----------
+function aggregate(checks){
+  const raw={}; PH_ORDER.forEach(p=>raw[p]=0);
+  APP_DATA.questions.forEach(q=>{ if(checks[q.seq]) raw[q.phase]+=q.weight; });
+  const nb={};
+  PH_ORDER.forEach((p,i)=>{
+    const prev=PH_ORDER[(i+3)%4], next=PH_ORDER[(i+1)%4];
+    nb[p]=raw[p]+0.5*raw[prev]+0.5*raw[next];
+  });
+  const sum=PH_ORDER.reduce((a,p)=>a+nb[p],0)||1;
+  const prob={}; PH_ORDER.forEach(p=>prob[p]=nb[p]/sum*100);
+  let top=PH_ORDER[0]; PH_ORDER.forEach(p=>{if(nb[p]>nb[top])top=p;});
+  return {raw,nb,prob,top,sum};
+}
+
+// 내가 뒤집은 판단(참고의견 '그렇다'인데 체크 안함 / '아니다·애매'인데 체크함)
+function disagreements(checks){
+  const out=[];
+  APP_DATA.questions.forEach(q=>{
+    const sug=q.suggest||{}; const checked=!!checks[q.seq];
+    if(sug.verdict==='수동') return;
+    const suggested = sug.verdict==='그렇다';
+    if(checked!==suggested){
+      out.push({seq:q.seq, indicator:q.indicator_name, phase:q.phase, text:q.text,
+                verdict:sug.verdict, checked, basis:sug.basis||''});
+    }
+  });
+  return out;
+}
+
+/* ============ 탭 1: 월간 체크 ============ */
+function renderCheck(){
+  const root=$('#tab-check'); root.innerHTML='';
+  const tb=ce('div','toolbar');
+  tb.innerHTML=`<label class="muted">기준월</label>
+    <input type="month" id="ym" value="${curMonth}">
+    <span class="period" id="period">차트 기간:
+      ${CHART_WINDOWS.map(([l,m])=>`<button class="pbtn${m===CHART_MONTHS?' on':''}" data-m="${m}">${l}</button>`).join('')}
+    </span>
+    <button class="btn" id="fillSug">참고 의견대로 모두 채우기</button>
+    <button class="btn" id="clearAll">초기화</button>
+    <button class="btn primary" id="save">이 달 저장</button>
+    <span class="foottip">데이터 기준일 ${APP_DATA.asof} · 빌드 ${APP_DATA.built_at}</span>`;
+  root.appendChild(tb);
+
+  const row=ce('div','row');
+  const main=ce('div','col-main');
+  const side=ce('div','col-side');
+  row.appendChild(main); row.appendChild(side); root.appendChild(row);
+
+  const groups=questionsByIndicator();
+  // 분류 순서 → 지표 순서대로
+  APP_DATA.indicators.forEach(ind=>{
+    const ser=APP_DATA.series[ind.id]||{};
+    const box=ce('div','ind');
+    const lp=(ser.points&&ser.points.length)?ser.points[ser.points.length-1]:null;
+    const lastHtml = lp ? `<span class="lastval">최근 <b>${fmtVal(lp.v,ser)}</b> <small>(${lp.d})</small></span>` : '';
+    const h=ce('h3',null,`${ind.name} <span class="cat-tag">${ind.category}</span> <span class="info" data-tip="${ind.id}">i</span> <span class="pill">${unitLabel(ser)}</span>${lastHtml}`);
+    box.appendChild(h);
+    // 툴팁
+    const tip=ce('div','tip'); tip.id='tip-'+ind.id;
+    let pf=''; for(const ph of PH_ORDER){ if(ind.phase_features&&ind.phase_features[ph]) pf+=`<div class="ph pname ${ph}">${ph}</div><div>${ind.phase_features[ph]}</div>`; }
+    tip.innerHTML=`<b>${ind.name}</b>${ind.desc?(' — '+ind.desc):''}<div class="pf">${pf}</div>`;
+    box.appendChild(tip);
+    // 차트 or 수동
+    if(ser.manual){
+      const links=(MANUAL_LINKS[ind.id]||[]).map(l=>`<a href="${l.url}" target="_blank" rel="noopener" class="srcbtn">${l.name} ↗</a>`).join('');
+      box.appendChild(ce('div','manual-note',
+        `📊 <b>수동 확인 지표</b> — 무료 자동 데이터가 없어 차트가 안 나옵니다. 아래 사이트에서 <b>최근 흐름(추세·고점/바닥)</b>을 직접 보고 4문항을 체크하세요.`
+        + (links?`<div class="srcrow">${links}</div>`:'')));
+    }else{
+      const cv=ce('canvas'); box.appendChild(cv);
+      setTimeout(()=>setupChart(cv, ser, '#6ea8fe'),0);
+    }
+    // 문항
+    const qs=ce('div','qs');
+    (groups[ind.id]||[]).forEach(q=>qs.appendChild(renderQ(q)));
+    box.appendChild(qs);
+    main.appendChild(box);
+  });
+
+  side.appendChild(renderAgg());
+  bindCheckEvents(root);
+  recompute();
+}
+function unitLabel(ser){return ser.unit||'';}
+
+function renderQ(q){
+  const sug=q.suggest||{};
+  const el=ce('div','q'); el.dataset.seq=q.seq;
+  const w2 = q.weight===2 ? '<span class="w2">2점</span>':'';
+  el.innerHTML=`<input type="checkbox" ${CHECKS[q.seq]?'checked':''}>
+    <div class="qbody">
+      <span class="phase-chip" style="background:${phaseColor(q.phase)}22;color:${phaseColor(q.phase)}">${q.phase}</span>
+      <span class="qtext">${q.text}</span>${w2}
+      <div class="sug"><span class="v ${sug.verdict}">참고: ${sug.verdict||'-'}</span>${sug.basis||''}</div>
+    </div>`;
+  return el;
+}
+
+function renderAgg(){
+  const a=ce('div','agg'); a.id='aggPanel';
+  a.innerHTML='<h3>집계</h3><div id="aggBody"></div>';
+  return a;
+}
+function recompute(){
+  const ag=aggregate(CHECKS);
+  const cli=APP_DATA.cli||{};
+  const body=$('#aggBody'); if(!body) return;
+  let probHtml='<div class="big-prob">';
+  PH_ORDER.forEach(p=>{ probHtml+=`<div class="pp"><div class="n pname ${p}">${ag.prob[p].toFixed(0)}%</div><div class="l">${p}</div></div>`; });
+  probHtml+='</div>';
+  let rows='<div class="scoregrid"><div class="hd">국면</div><div class="hd">원점수</div><div class="hd">이웃가중</div><div class="hd">확률</div>';
+  PH_ORDER.forEach(p=>{
+    rows+=`<div class="pname ${p}">${p}</div><div class="mono">${ag.raw[p]}</div><div class="mono">${ag.nb[p].toFixed(1)}</div><div class="mono">${ag.prob[p].toFixed(1)}%</div>`;
+  });
+  rows+='</div>';
+  // CLI 비교
+  const match = cli.phase ? (cli.phase===ag.top) : null;
+  let cliHtml='';
+  if(cli.phase){
+    cliHtml=`<div class="cli-box">내 판단 최다국면: <b class="pname ${ag.top}">${ag.top}</b><br>
+      OECD 경기선행지수(CLI) 국면: <b class="pname ${cli.phase}">${cli.phase}</b> <span class="muted">(지수 ${cli.level??'-'}, ${cli.rising?'상승':'하락'})</span><br>
+      ${match?'<span class="match-ok">✔ 일치</span>':'<span class="match-no">✘ 불일치 — 공부할 지점</span>'}</div>`;
+  }else{
+    cliHtml='<div class="cli-box muted">CLI 데이터 없음</div>';
+  }
+  const dis=disagreements(CHECKS);
+  body.innerHTML=probHtml+rows+cliHtml+
+    `<div class="foottip">이웃가중: 각 국면 + 0.5×양옆(침체↔회복↔확장↔둔화 원형). 확률=이웃가중/합계.</div>
+     <div class="foottip">내가 참고의견과 다르게 본 문항: <b>${dis.length}</b>개 (저장 시 기록)</div>`;
+  // 차트 위 disagree 표시
+  $$('.q').forEach(el=>{
+    const q=QMAP[el.dataset.seq]; const sug=q.suggest||{};
+    const checked=$('input',el).checked;
+    const dg = sug.verdict!=='수동' && (checked!==(sug.verdict==='그렇다'));
+    el.classList.toggle('disagree',dg);
+  });
+}
+
+function bindCheckEvents(root){
+  root.addEventListener('change',e=>{
+    if(e.target.matches('.q input[type=checkbox]')){
+      const seq=+e.target.closest('.q').dataset.seq;
+      CHECKS[seq]=e.target.checked; saveDraft(); recompute();
+    }
+  });
+  root.addEventListener('click',e=>{
+    if(e.target.matches('.info')){ $('#tip-'+e.target.dataset.tip).classList.toggle('show'); }
+  });
+  $('#ym').addEventListener('change',e=>{ curMonth=e.target.value; loadDraftOrRecord(); });
+  $('#fillSug').addEventListener('click',()=>{
+    APP_DATA.questions.forEach(q=>{ if((q.suggest||{}).verdict==='그렇다') CHECKS[q.seq]=true; });
+    syncChecks(); saveDraft(); recompute();
+  });
+  $('#clearAll').addEventListener('click',()=>{ CHECKS={}; syncChecks(); saveDraft(); recompute(); });
+  $('#save').addEventListener('click',saveRecord);
+  const per=$('#period');
+  if(per) per.addEventListener('click',e=>{
+    if(e.target.matches('.pbtn')){
+      CHART_MONTHS=+e.target.dataset.m;
+      $$('.pbtn',per).forEach(b=>b.classList.toggle('on',b===e.target));
+      redrawAllCharts();
+    }
+  });
+}
+function syncChecks(){ $$('.q').forEach(el=>{const seq=+el.dataset.seq; $('input',el).checked=!!CHECKS[seq];}); }
+
+// 드래프트(localStorage) — 유실 방지용 임시저장
+function draftKey(){return 'cyc_draft_'+curMonth;}
+function saveDraft(){ try{localStorage.setItem(draftKey(),JSON.stringify(CHECKS));}catch(e){} }
+async function loadDraftOrRecord(){
+  // 저장된 기록 우선, 없으면 임시 드래프트
+  const rec = STORE.records[curMonth];
+  if(rec && rec.checks){ CHECKS={...rec.checks}; }
+  else{ try{ CHECKS=JSON.parse(localStorage.getItem(draftKey())||'{}'); }catch(e){ CHECKS={}; } }
+  syncChecks(); recompute();
+}
+
+async function saveRecord(){
+  const ag=aggregate(CHECKS);
+  const dis=disagreements(CHECKS).map(d=>({...d,memo:''}));
+  const rec={ ym:curMonth, asof:APP_DATA.asof, built_at:APP_DATA.built_at,
+    checks:CHECKS, scores:{raw:ag.raw,neighbor:ag.nb,prob:ag.prob}, top:ag.top,
+    cli_phase:(APP_DATA.cli||{}).phase||null, cli_level:(APP_DATA.cli||{}).level??null,
+    cli_match:(APP_DATA.cli||{}).phase? ((APP_DATA.cli||{}).phase===ag.top):null,
+    disagrees:dis, saved_at:new Date().toISOString() };
+  STORE.records[curMonth]=rec;
+  const ok=await persistStore();
+  toast(ok ? `저장·동기화 완료 (${curMonth})` : `이 기기에 저장됨 (${curMonth}) — 온라인되면 자동 동기화 안 됨, 동기화 버튼 확인`);
+}
+function toast(msg){
+  const t=ce('div',null,msg);
+  t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#27406e;color:#dce7ff;padding:10px 16px;border-radius:8px;z-index:99;border:1px solid #365a99';
+  document.body.appendChild(t); setTimeout(()=>t.remove(),3000);
+}
+
+/* ============ 탭 2: 히스토리 ============ */
+async function renderHist(){
+  const root=$('#tab-hist'); root.innerHTML='<div class="seg"><h3>월별 국면 점수 추이</h3><div id="histBody" class="muted">불러오는 중…</div></div>';
+  const records = STORE.records || {};
+  const yms=Object.keys(records).sort();
+  const body=$('#histBody');
+  if(!yms.length){ body.innerHTML='저장된 기록이 없습니다. (월간 체크 탭에서 저장하세요)'; return; }
+  body.innerHTML='';
+  // 스택바: 국면별 원점수
+  yms.forEach(ym=>{
+    const r=records[ym]; const sc=(r.scores&&r.scores.raw)||{};
+    const tot=PH_ORDER.reduce((a,p)=>a+(sc[p]||0),0)||1;
+    const wrap=ce('div'); wrap.style.marginBottom='12px';
+    let segs='';
+    PH_ORDER.forEach(p=>{ const w=(sc[p]||0)/tot*100; segs+=`<span title="${p} ${sc[p]||0}점" style="width:${w}%;background:${phaseColor(p)}"></span>`; });
+    const match=r.cli_match;
+    const flag = match===false ? `<span class="match-no" title="CLI(${r.cli_phase})와 불일치">✘ ${r.cli_phase}</span>`
+               : match===true ? `<span class="match-ok">✔ ${r.cli_phase}</span>` : '<span class="muted">-</span>';
+    wrap.innerHTML=`<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+        <span><b>${ym}</b> · 최다 <span class="pname ${r.top}">${r.top||'-'}</span></span>
+        <span>CLI ${flag} · 뒤집은 판단 ${ (r.disagrees||[]).length }개</span></div>
+      <div class="hist-bar">${segs}</div>`;
+    if(match===false) wrap.style.outline='1px solid #e5544b55', wrap.style.outlineOffset='3px', wrap.style.borderRadius='4px';
+    body.appendChild(wrap);
+  });
+  // 범례
+  const lg=ce('div'); lg.style.cssText='margin-top:10px;font-size:12px';
+  lg.innerHTML=PH_ORDER.map(p=>`<span class="pill" style="border-color:${phaseColor(p)};color:${phaseColor(p)}">${p}</span>`).join(' ');
+  body.appendChild(lg);
+  // 내가 뒤집은 판단
+  const dseg=ce('div','seg'); dseg.innerHTML='<h3>내가 뒤집은 판단 (참고의견과 다르게 본 문항)</h3>';
+  const dbody=ce('div','disg-list');
+  let any=false;
+  yms.slice().reverse().forEach(ym=>{
+    const r=records[ym]; const ds=r.disagrees||[]; if(!ds.length) return; any=true;
+    const h=ce('div'); h.innerHTML=`<div style="margin:8px 0 4px"><b>${ym}</b></div>`;
+    ds.forEach(d=>{
+      h.appendChild(ce('div','disg-item',
+        `<span class="phase-chip" style="background:${phaseColor(d.phase)}22;color:${phaseColor(d.phase)}">${d.phase}</span>
+         <b>${d.indicator}</b> — ${d.text}<br>
+         <span class="muted">참고의견 <b class="v ${d.verdict}">${d.verdict}</b> / 내 체크 <b>${d.checked?'O':'X'}</b>${d.memo?(' · 메모: '+d.memo):''}</span>`));
+    });
+    dbody.appendChild(h);
+  });
+  if(!any) dbody.innerHTML='<span class="muted">아직 없음.</span>';
+  dseg.appendChild(dbody); root.appendChild(dseg);
+}
+function collectLocalDrafts(){
+  // file:// 폴백: localStorage 드래프트로 최소한의 히스토리
+  const out={};
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);
+    if(k.startsWith('cyc_draft_')){const ym=k.slice(10); try{const ch=JSON.parse(localStorage.getItem(k));
+      const ag=aggregate(ch); out[ym]={ym,scores:{raw:ag.raw},top:ag.top,disagrees:disagreements(ch),cli_match:null};}catch(e){}}}
+  return out;
+}
+
+/* ============ 탭 3: 시나리오 ============ */
+const LENSES=[['domestic_pol','대내 정치'],['foreign_pol','대외 정치'],['policy','경제 정책'],
+              ['currency','기축통화'],['growth_inflation','성장·물가'],['markets','자산시장']];
+async function renderScn(){
+  const root=$('#tab-scn'); root.innerHTML='';
+  // 입력 폼
+  const form=ce('div','seg');
+  form.innerHTML='<h3>① 인풋 브레인스토밍 (6가지 렌즈)</h3>';
+  const lens=ce('div','lens');
+  LENSES.forEach(([k,label])=>{ lens.appendChild(ce('div',null,`<label>${label}</label><textarea id="ln_${k}"></textarea>`)); });
+  form.appendChild(lens);
+  root.appendChild(form);
+
+  const chainSeg=ce('div','seg');
+  chainSeg.innerHTML='<h3>② 인과 체인 (A → B → C → 국면)</h3><div id="chains"></div><button class="btn" id="addChain">+ 체인 추가</button>';
+  root.appendChild(chainSeg);
+
+  const fin=ce('div','seg');
+  fin.innerHTML=`<h3>③ 핵심 변수 + 시나리오 확정</h3>
+    <label class="muted">핵심 변수</label><br><input type="text" id="scn_key" style="width:100%;margin:4px 0 10px" placeholder="이 시나리오를 좌우하는 핵심 변수">
+    <label class="muted">시나리오 본문</label><br><textarea id="scn_body" style="width:100%;min-height:90px;margin:4px 0 10px"></textarea>
+    <label class="muted"><span class="req">*필수</span> 이 시나리오가 틀리기 시작하는 조기 신호</label><br>
+    <textarea id="scn_signal" style="width:100%;min-height:60px;margin:4px 0 10px" placeholder="예: 신규 실업수당 청구가 2개월 연속 OO 돌파 / 하이일드 스프레드 OObp 상회 …"></textarea>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span class="muted">연결 월: <b>${curMonth}</b></span>
+      <button class="btn primary" id="saveScn">시나리오 확정·박제</button>
+    </div>
+    <div class="foottip">확정 후에는 수정할 수 없습니다(박제). 새 판단은 새 시나리오로 추가하세요.</div>`;
+  root.appendChild(fin);
+
+  const chains=$('#chains'); const addChain=()=>{const r=ce('div','chain-row'); r.innerHTML='<input type="text" placeholder="A → B → C → (국면)">'; chains.appendChild(r);};
+  addChain(); $('#addChain').onclick=addChain;
+  $('#saveScn').onclick=saveScenario;
+
+  // 과거 시나리오(읽기 전용)
+  const hist=ce('div','seg'); hist.innerHTML='<h3>확정된 시나리오 (읽기 전용)</h3><div id="scnList" class="muted"></div>';
+  root.appendChild(hist);
+  const list=(STORE.scenarios||[]).slice();
+  const lroot=$('#scnList');
+  if(!list.length){ lroot.innerHTML='아직 확정된 시나리오가 없습니다.'; }
+  else{ lroot.innerHTML=''; list.sort((a,b)=>(b.created||'').localeCompare(a.created)).forEach(s=>lroot.appendChild(scnCard(s))); }
+}
+function scnCard(s){
+  const c=ce('div','scn-card');
+  const lensHtml=LENSES.filter(([k])=>s.lenses&&s.lenses[k]).map(([k,l])=>`<b>${l}:</b> ${s.lenses[k]}`).join('<br>');
+  c.innerHTML=`<div class="meta">작성일 ${s.created} · 연결월 ${s.ym||'-'}</div>
+    <div style="margin:6px 0"><b>핵심변수:</b> ${s.key||'-'}</div>
+    <div style="margin:6px 0">${(s.body||'').replace(/\n/g,'<br>')}</div>
+    ${(s.chains&&s.chains.length)?'<div class="muted" style="margin:6px 0"><b>인과체인</b><br>'+s.chains.map(x=>'· '+x).join('<br>')+'</div>':''}
+    <div style="margin:6px 0;color:#f0c987"><b>⚠ 조기 신호:</b> ${(s.signal||'').replace(/\n/g,'<br>')}</div>
+    ${lensHtml?'<details><summary class="muted">렌즈 인풋</summary><div class="muted" style="margin-top:6px">'+lensHtml+'</div></details>':''}`;
+  return c;
+}
+async function saveScenario(){
+  const key=$('#scn_key').value.trim(), body=$('#scn_body').value.trim(), signal=$('#scn_signal').value.trim();
+  if(!signal){ toast('조기 신호는 필수입니다.'); $('#scn_signal').focus(); return; }
+  if(!body){ toast('시나리오 본문을 입력하세요.'); return; }
+  const lenses={}; LENSES.forEach(([k])=>{const v=$('#ln_'+k).value.trim(); if(v)lenses[k]=v;});
+  const chains=$$('#chains input').map(i=>i.value.trim()).filter(Boolean);
+  const now=new Date(); const created=now.toISOString().slice(0,10);
+  const id=now.toISOString().replace(/[:.]/g,'-');
+  const scn={id,created,ym:curMonth,key,body,signal,lenses,chains};
+  STORE.scenarios=STORE.scenarios||[]; STORE.scenarios.push(scn);
+  const ok=await persistStore();
+  toast(ok?'시나리오 박제·동기화 완료':'이 기기에 저장됨 (동기화 안 됨)');
+  renderScn();
+}
+
+/* ============ 탭 4: 자산군 판단 ============ */
+async function renderAsset(){
+  const root=$('#tab-asset'); root.innerHTML='';
+  const ar=STORE.asset_returns||APP_DATA.asset_returns||{};
+  const assets=ar.assets||[];
+  const ag=aggregate(CHECKS);
+  const seg=ce('div','seg');
+  seg.innerHTML=`<h3>자산군 기대수익률 = 국면확률 × 국면별 과거수익률</h3>
+    <div class="foottip">국면 확률은 <b>월간 체크 탭</b> 결과를 자동으로 씁니다. 아래 국면별 수익률(%)은 직접 수정·저장하세요(Invesco/Kenneth French 등 본인 수치).</div>`;
+  root.appendChild(seg);
+  if(!assets.length){ root.appendChild(ce('div','muted','config/asset_returns.json 에 assets/returns 를 채우세요. (템플릿 예시 더미가 들어 있습니다)')); return; }
+
+  // 확률 헤더
+  let html='<table><tr><th class="l">자산군</th>';
+  PH_ORDER.forEach(p=>{ html+=`<th class="pname ${p}">${p}<br><span class="muted mono">${ag.prob[p].toFixed(0)}%</span></th>`; });
+  html+='<th>기대수익</th></tr>';
+  assets.forEach(a=>{
+    html+=`<tr><td class="l">${a}</td>`;
+    let exp=0;
+    PH_ORDER.forEach(p=>{ const v=((ar.returns||{})[p]||{})[a]; const num=(v==null?'':v);
+      exp += (Number(v)||0)*ag.prob[p]/100;
+      html+=`<td><input type="text" data-a="${a}" data-p="${p}" value="${num}" style="width:60px;text-align:right" class="mono"></td>`; });
+    html+=`<td class="mono exp" data-a="${a}"><b>${exp.toFixed(2)}%</b></td></tr>`;
+  });
+  html+='</table><div style="margin-top:10px"><button class="btn primary" id="saveAR">국면별 수익률 저장</button> <button class="btn" id="recalcAR">기대수익 재계산</button></div>';
+  const wrap=ce('div'); wrap.innerHTML=html; root.appendChild(wrap);
+
+  const recalc=()=>{
+    assets.forEach(a=>{ let exp=0;
+      PH_ORDER.forEach(p=>{ const inp=$(`input[data-a="${CSS.escape(a)}"][data-p="${p}"]`); exp+=(Number(inp.value)||0)*ag.prob[p]/100; });
+      $(`.exp[data-a="${CSS.escape(a)}"]`).innerHTML='<b>'+exp.toFixed(2)+'%</b>';
+    });
+  };
+  $('#recalcAR').onclick=recalc;
+  wrap.addEventListener('input',e=>{ if(e.target.matches('input[data-a]')) recalc(); });
+  $('#saveAR').onclick=async()=>{
+    const returns={}; PH_ORDER.forEach(p=>returns[p]={});
+    $$('input[data-a]').forEach(i=>{ const v=i.value.trim(); if(v!=='') returns[i.dataset.p][i.dataset.a]=Number(v); });
+    const newAR={...ar,returns};
+    STORE.asset_returns=newAR;
+    const ok=await persistStore();
+    toast(ok?'국면별 수익률 저장·동기화 완료':'이 기기에 저장됨 (동기화 안 됨)');
+  };
+}
+
+/* ============ 탭 전환 ============ */
+function switchTab(name){
+  $$('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===name));
+  ['check','hist','scn','asset'].forEach(t=>$('#tab-'+t).style.display=(t===name?'':'none'));
+  if(location.hash.slice(1)!==name) history.replaceState(null,'','#'+name);
+  if(name==='hist') renderHist();
+  if(name==='scn') renderScn();
+  if(name==='asset') renderAsset();
+}
+$$('.tabs button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+
+/* ============ 초기화 ============ */
+$('#syncBtn').onclick=openSyncUI;
+(async function init(){
+  $('#asof').textContent='데이터 '+APP_DATA.asof;
+  await initStore();
+  renderCheck();
+  await loadDraftOrRecord();
+  const h=location.hash.slice(1);
+  if(['hist','scn','asset'].includes(h)) switchTab(h);
+})();
+</script>
+</body>
+</html>

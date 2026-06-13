@@ -1,0 +1,15 @@
+# 로컬 전용 비밀/캐시 — 절대 커밋 금지
+data/.fred_key
+data/cache/
+data/records/
+data/scenarios/
+
+# 생성물(빌드 시 재생성, Actions가 배포)
+output/
+site/
+
+# 잡파일
+srv.log
+_*.png
+__pycache__/
+*.pyc

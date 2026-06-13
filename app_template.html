@@ -50,6 +50,8 @@
   .pbtn{background:var(--panel2);border:1px solid var(--line);color:var(--mut);padding:4px 9px;border-radius:6px;cursor:pointer;font-size:12px}
   .pbtn.on{background:#27406e;border-color:#365a99;color:#dce7ff}
   .manual-note{background:#2a2233;border:1px dashed #5a4a6a;border-radius:8px;padding:10px;color:#d3b8e6;font-size:12.5px;margin:8px 0}
+  .ismrow{display:flex;align-items:center;gap:8px;margin:10px 0;font-size:13px}
+  .ismrow input{background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:6px;padding:5px 8px}
   .srcrow{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
   a.srcbtn{display:inline-block;background:#3a2f4a;border:1px solid #6a5a80;color:#e7d8f5;text-decoration:none;padding:5px 10px;border-radius:7px;font-size:12px}
   a.srcbtn:hover{background:#473a5c;border-color:#8a76a6}
@@ -74,6 +76,8 @@
   .bar{height:9px;border-radius:5px;background:var(--panel2);overflow:hidden;margin-top:8px}
   .pname{font-weight:700}
   .pname.침체{color:var(--침체)} .pname.회복{color:var(--회복)} .pname.확장{color:var(--확장)} .pname.둔화{color:var(--둔화)}
+  .catbox{margin-top:12px;font-size:12px} .catbox summary{cursor:pointer;color:var(--mut)}
+  .cattbl{margin-top:8px;font-size:12px} .cattbl th,.cattbl td{padding:3px 6px} .cattbl .tot td{border-top:2px solid var(--mut2);font-weight:700}
   .cli-box{margin-top:14px;padding:10px;border-radius:9px;background:var(--panel2);font-size:12.5px}
   .match-ok{color:var(--yes);font-weight:700} .match-no{color:var(--no);font-weight:700}
   .big-prob{display:flex;gap:6px;margin:10px 0}
@@ -158,17 +162,30 @@ async function syncPush(code,data){ return await syncRpc('sync_push',{p_sync_id:
 
 let SYNC_CODE = localStorage.getItem('cyc_sync_code') || '';
 let ONLINE = false;                                        // Supabase 연결됨?
-let STORE = { records:{}, scenarios:[], asset_returns:null }; // 전체 데이터 한 덩어리
+const STORE_DEFAULT = { records:{}, scenarios:[], asset_returns:null, ism:{} };
+let STORE = {...STORE_DEFAULT};                             // 전체 데이터 한 덩어리
+const asStore = o => Object.assign({}, JSON.parse(JSON.stringify(STORE_DEFAULT)), o||{});
 
 function cacheStore(){ try{ localStorage.setItem('cyc_store', JSON.stringify(STORE)); }catch(e){} }
-function loadCache(){ try{ const s=JSON.parse(localStorage.getItem('cyc_store')||'null'); if(s) STORE=Object.assign({records:{},scenarios:[],asset_returns:null},s); }catch(e){} }
+function loadCache(){ try{ const s=JSON.parse(localStorage.getItem('cyc_store')||'null'); if(s) STORE=asStore(s); }catch(e){} }
+
+// 두 STORE 병합(동기화 충돌 방지): 다른 기기 기록을 잃지 않게 합침. 방금 저장한 local 우선.
+function mergeStore(remote, local){
+  const out = asStore({});
+  out.records = Object.assign({}, remote.records||{}, local.records||{});  // 같은 월은 local(방금 저장) 우선, 나머진 양쪽 보존
+  out.ism     = Object.assign({}, remote.ism||{},     local.ism||{});
+  const byId={}; (remote.scenarios||[]).concat(local.scenarios||[]).forEach(s=>{ if(s&&s.id) byId[s.id]=s; }); // 박제 합집합
+  out.scenarios = Object.values(byId);
+  out.asset_returns = local.asset_returns || remote.asset_returns || null;
+  return out;
+}
 
 async function initStore(){
   loadCache();
   if(!SYNC_CODE){ SYNC_CODE=genCode(); localStorage.setItem('cyc_sync_code',SYNC_CODE); }
   try{
     const row=await syncPull(SYNC_CODE); ONLINE=true;
-    if(row && row.data){ STORE=Object.assign({records:{},scenarios:[],asset_returns:null},row.data); cacheStore(); }
+    if(row && row.data){ STORE=mergeStore(row.data, STORE); cacheStore(); }  // 캐시와 서버 병합
     else { await syncPush(SYNC_CODE, STORE); }   // 새 코드면 현재(캐시) 내용을 올려둠
   }catch(e){ ONLINE=false; }
   if(STORE.asset_returns==null) STORE.asset_returns=APP_DATA.asset_returns||{};
@@ -176,8 +193,15 @@ async function initStore(){
 }
 async function persistStore(){
   cacheStore();
-  if(!ONLINE && SYNC_CODE){ try{ await syncPull(SYNC_CODE); ONLINE=true; }catch(e){} }
-  if(ONLINE){ try{ await syncPush(SYNC_CODE,STORE); updateSyncBanner(); return true; }catch(e){ ONLINE=false; } }
+  if(SYNC_CODE){
+    try{
+      const row=await syncPull(SYNC_CODE);          // 저장 직전 최신을 받아 병합 → 다른 기기 기록 안 잃음
+      ONLINE=true;
+      if(row && row.data) STORE=mergeStore(row.data, STORE);
+      await syncPush(SYNC_CODE, STORE);
+      cacheStore(); updateSyncBanner(); return true;
+    }catch(e){ ONLINE=false; }
+  }
   updateSyncBanner(); return false;
 }
 async function applyCode(code){   // 다른 기기 코드 입력 → 그 데이터 가져오기
@@ -185,10 +209,10 @@ async function applyCode(code){   // 다른 기기 코드 입력 → 그 데이�
   try{
     const row=await syncPull(code); ONLINE=true;
     SYNC_CODE=code.replace(/(.{5})(?=.)/g,'$1-'); localStorage.setItem('cyc_sync_code',SYNC_CODE);
-    STORE = row && row.data ? Object.assign({records:{},scenarios:[],asset_returns:null},row.data) : STORE;
+    STORE = row && row.data ? asStore(row.data) : STORE;
     if(STORE.asset_returns==null) STORE.asset_returns=APP_DATA.asset_returns||{};
     cacheStore(); toast('동기화 코드 적용 완료 — 데이터를 불러왔습니다');
-    renderCheck(); await loadDraftOrRecord();
+    updateIsmSuggestions(); renderCheck(); await loadDraftOrRecord();
   }catch(e){ toast('불러오기 실패: '+e.message); }
 }
 function updateSyncBanner(){
@@ -306,6 +330,49 @@ function redrawChart(cv, ser, color, hoverIdx){
   }
 }
 
+// ---------- 보조 의견 엔진(JS) : 입력형 지표(ISM 등) 참고 의견 계산 (build.py 로직의 JS 포팅) ----------
+function linregSlope(ys){ const n=ys.length; if(n<2)return 0; let mx=0,my=0; for(let i=0;i<n;i++){mx+=i;my+=ys[i];} mx/=n;my/=n;
+  let num=0,den=0; for(let i=0;i<n;i++){num+=(i-mx)*(ys[i]-my); den+=(i-mx)*(i-mx);} return num/(den||1e-9); }
+function metricsJS(points){
+  const vals=points.map(p=>p.v), n=vals.length; if(!n) return null;
+  const w5=vals.slice(-60), rng=(Math.max(...w5)-Math.min(...w5))||1e-9;
+  const win=vals.slice(-13), last=vals[n-1];
+  const chgWin=win[win.length-1]-win[0];
+  const chg6=n>=7?last-vals[n-7]:last-vals[0];
+  const chg3=n>=4?last-vals[n-4]:last-vals[0];
+  const pct=(last-Math.min(...w5))/rng*100;
+  let imin=0,imax=0; win.forEach((v,i)=>{if(v<win[imin])imin=i; if(v>win[imax])imax=i;});
+  return {last,rng,slope:linregSlope(win),chgWin,chg6,chg3,pct,
+          iminFromEnd:win.length-1-imin, relWin:chgWin/rng, rel6:chg6/rng};
+}
+function suggestGeneric(qtypes, m, unit){
+  if(!m) return {verdict:'수동',basis:'데이터 부족'};
+  const votes=[]; const add=(l,r)=>votes.push([l,r]);
+  for(const t of qtypes){
+    if(t==='uptrend'){ if(m.relWin>0.12&&m.chg6>0)add(2,'상승 추세 뚜렷'); else if(m.relWin>0.04)add(1,'완만한 상승'); else add(0,'상승 추세 아님'); }
+    else if(t==='downtrend'){ if(m.relWin<-0.12&&m.chg6<0)add(2,'하락 추세 뚜렷'); else if(m.relWin<-0.04)add(1,'완만한 하락'); else add(0,'하락 추세 아님'); }
+    else if(t==='peak'){ if(m.pct>=72&&m.chg3<=0)add(2,'고점권 & 꺾임'); else if(m.pct>=72)add(1,'고점권이나 아직 상승'); else add(0,`고점권 아님(백분위 ${m.pct.toFixed(0)}%)`); }
+    else if(t==='trough'){ if(m.pct<=28)add(2,'바닥권'); else if(m.pct<=42)add(1,'바닥 근접'); else add(0,`바닥권 아님(백분위 ${m.pct.toFixed(0)}%)`); }
+    else if(t==='rebound'){ if(m.iminFromEnd>=2&&m.chg3>0)add(2,'저점 이후 반등 중'); else if(m.chg3>0)add(1,'단기 반등 신호'); else add(0,'반등 미확인'); }
+    else if(t==='low_level'){ if(m.pct<=32)add(2,'낮은 수준'); else if(m.pct<=45)add(1,'다소 낮음'); else add(0,'낮은 수준 아님'); }
+    else if(t==='high_level'){ if(m.pct>=68)add(2,'높은 수준'); else if(m.pct>=55)add(1,'다소 높음'); else add(0,'높은 수준 아님'); }
+  }
+  const base=`기울기 ${m.slope>=0?'+':''}${m.slope.toFixed(3)}, 6개월 ${m.chg6>=0?'+':''}${m.chg6.toFixed(1)}, 5년 백분위 ${m.pct.toFixed(0)}%`;
+  if(!votes.length) return {verdict:'애매',basis:base};
+  const v=Math.max(...votes.map(x=>x[0]));
+  const verdict={2:'그렇다',1:'애매',0:'아니다'}[v];
+  const reasons=votes.filter(x=>x[0]===v).map(x=>x[1]).join('; ');
+  return {verdict, basis:reasons+'  ('+base+')'};
+}
+// ISM: STORE.ism({ym:값}) → 시계열 + 4문항 참고의견 갱신
+function ismPoints(){ return Object.keys(STORE.ism||{}).sort().map(d=>({d, v:Number(STORE.ism[d])})).filter(p=>!isNaN(p.v)); }
+function updateIsmSuggestions(){
+  const pts=ismPoints(); const m=pts.length>=2?metricsJS(pts):null;
+  APP_DATA.questions.forEach(q=>{ if(q.indicator_id==='ism'){
+    q.suggest = m ? suggestGeneric(q.qtypes, m, '') : {verdict:'수동', basis:'ISM 값을 입력하면 자동 참고의견이 계산됩니다.'};
+  }});
+}
+
 // ---------- 상태 ----------
 let CHECKS = {};        // {seq:true}
 let curMonth = curYM();
@@ -355,6 +422,7 @@ function disagreements(checks){
 /* ============ 탭 1: 월간 체크 ============ */
 function renderCheck(){
   const root=$('#tab-check'); root.innerHTML='';
+  CHARTS.length=0;            // 재렌더 시 옛 차트 등록 제거(중복 누적 방지)
   const tb=ce('div','toolbar');
   tb.innerHTML=`<label class="muted">기준월</label>
     <input type="month" id="ym" value="${curMonth}">
@@ -375,7 +443,9 @@ function renderCheck(){
   const groups=questionsByIndicator();
   // 분류 순서 → 지표 순서대로
   APP_DATA.indicators.forEach(ind=>{
-    const ser=APP_DATA.series[ind.id]||{};
+    let ser=APP_DATA.series[ind.id]||{};
+    // ISM(수동)은 사용자가 입력한 값(STORE.ism)으로 시계열을 구성
+    if(ind.id==='ism'){ ser={name:ind.name, transform:'level', unit:'', manual:true, points:ismPoints()}; }
     const box=ce('div','ind');
     const lp=(ser.points&&ser.points.length)?ser.points[ser.points.length-1]:null;
     const lastHtml = lp ? `<span class="lastval">최근 <b>${fmtVal(lp.v,ser)}</b> <small>(${lp.d})</small></span>` : '';
@@ -387,11 +457,20 @@ function renderCheck(){
     tip.innerHTML=`<b>${ind.name}</b>${ind.desc?(' — '+ind.desc):''}<div class="pf">${pf}</div>`;
     box.appendChild(tip);
     // 차트 or 수동
-    if(ser.manual){
-      const links=(MANUAL_LINKS[ind.id]||[]).map(l=>`<a href="${l.url}" target="_blank" rel="noopener" class="srcbtn">${l.name} ↗</a>`).join('');
+    if(ind.id==='ism'){
+      // 입력값이 2개 이상이면 미니 차트
+      if(ser.points.length>=2){ const cv=ce('canvas'); box.appendChild(cv); setTimeout(()=>setupChart(cv, ser, '#b388e6'),0); }
+      const links=(MANUAL_LINKS.ism||[]).map(l=>`<a href="${l.url}" target="_blank" rel="noopener" class="srcbtn">${l.name} ↗</a>`).join('');
+      const cur = (STORE.ism&&STORE.ism[curMonth]!=null) ? STORE.ism[curMonth] : '';
       box.appendChild(ce('div','manual-note',
-        `📊 <b>수동 확인 지표</b> — 무료 자동 데이터가 없어 차트가 안 나옵니다. 아래 사이트에서 <b>최근 흐름(추세·고점/바닥)</b>을 직접 보고 4문항을 체크하세요.`
+        `📊 <b>ISM은 직접 입력</b>(무료 자동데이터 없음). 아래 사이트에서 이번 달 값을 보고 적으세요 — 입력하면 위 차트·참고의견이 자동 계산됩니다.`
+        + `<div class="ismrow"><b>${curMonth}</b> ISM PMI:
+            <input type="number" step="0.1" id="ismInput" value="${cur}" placeholder="예: 54.0" style="width:90px">
+            <button class="btn" id="ismSave">값 저장</button></div>`
         + (links?`<div class="srcrow">${links}</div>`:'')));
+    }else if(ser.manual){
+      const links=(MANUAL_LINKS[ind.id]||[]).map(l=>`<a href="${l.url}" target="_blank" rel="noopener" class="srcbtn">${l.name} ↗</a>`).join('');
+      box.appendChild(ce('div','manual-note',`📊 <b>수동 확인 지표</b> — 무료 데이터 없음. 직접 확인 후 체크하세요.`+(links?`<div class="srcrow">${links}</div>`:'')));
     }else{
       const cv=ce('canvas'); box.appendChild(cv);
       setTimeout(()=>setupChart(cv, ser, '#6ea8fe'),0);
@@ -449,8 +528,19 @@ function recompute(){
   }else{
     cliHtml='<div class="cli-box muted">CLI 데이터 없음</div>';
   }
+  // 분류별(6개 카테고리) 원점수 — 엑셀 '결과 확인' 시트와 동일
+  const catSc={}; CAT_ORDER.forEach(c=>catSc[c]={침체:0,회복:0,확장:0,둔화:0});
+  APP_DATA.questions.forEach(q=>{ if(CHECKS[q.seq] && catSc[q.category]) catSc[q.category][q.phase]+=q.weight; });
+  let catRows='';
+  CAT_ORDER.forEach(c=>{ catRows+=`<tr><td class="l">${c}</td>`+
+    PH_ORDER.map(p=>`<td class="mono">${catSc[c][p]||''}</td>`).join('')+'</tr>'; });
+  const catHtml=`<details class="catbox"><summary>분류별 점수 (엑셀과 동일)</summary>
+    <table class="cattbl"><tr><th class="l">분류</th>${PH_ORDER.map(p=>`<th class="pname ${p}">${p}</th>`).join('')}</tr>
+    ${catRows}
+    <tr class="tot"><td class="l">합계</td>${PH_ORDER.map(p=>`<td class="mono">${ag.raw[p]}</td>`).join('')}</tr></table></details>`;
+
   const dis=disagreements(CHECKS);
-  body.innerHTML=probHtml+rows+cliHtml+
+  body.innerHTML=probHtml+rows+cliHtml+catHtml+
     `<div class="foottip">이웃가중: 각 국면 + 0.5×양옆(침체↔회복↔확장↔둔화 원형). 확률=이웃가중/합계.</div>
      <div class="foottip">내가 참고의견과 다르게 본 문항: <b>${dis.length}</b>개 (저장 시 기록)</div>`;
   // 차트 위 disagree 표시
@@ -471,6 +561,12 @@ function bindCheckEvents(root){
   });
   root.addEventListener('click',e=>{
     if(e.target.matches('.info')){ $('#tip-'+e.target.dataset.tip).classList.toggle('show'); }
+    if(e.target.id==='ismSave'){
+      const v=($('#ismInput').value||'').trim();
+      STORE.ism=STORE.ism||{};
+      if(v==='') delete STORE.ism[curMonth]; else STORE.ism[curMonth]=Number(v);
+      persistStore().then(ok=>{ updateIsmSuggestions(); renderCheck(); recompute(); toast(ok?'ISM 값 저장·동기화':'ISM 값 이 기기에 저장'); });
+    }
   });
   $('#ym').addEventListener('change',e=>{ curMonth=e.target.value; loadDraftOrRecord(); });
   $('#fillSug').addEventListener('click',()=>{
@@ -704,6 +800,7 @@ $('#syncBtn').onclick=openSyncUI;
 (async function init(){
   $('#asof').textContent='데이터 '+APP_DATA.asof;
   await initStore();
+  updateIsmSuggestions();
   renderCheck();
   await loadDraftOrRecord();
   const h=location.hash.slice(1);

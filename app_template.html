@@ -4,18 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>경기순환 체크리스트</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root{
-    --bg:#0f1115; --panel:#171a21; --panel2:#1d212b; --line:#2a2f3a;
-    --txt:#e6e8ec; --mut:#8b93a3; --mut2:#5d6470;
+    --bg:#0f1115; --bar:#0b0d11; --panel:#161a21; --panel2:#1c2029; --line:#262b36; --line2:#323845;
+    --txt:#e8eaee; --mut:#8b93a3; --mut2:#5d6470;
     --침체:#e5544b; --회복:#e0a82e; --확장:#3fae6b; --둔화:#4a86e8;
     --yes:#3fae6b; --no:#e5544b; --maybe:#8b93a3;
     --accent:#6ea8fe;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--txt);font-family:"Segoe UI","Malgun Gothic",sans-serif;font-size:14px;line-height:1.5}
-  header{position:sticky;top:0;z-index:20;background:#0c0e12;border-bottom:1px solid var(--line);padding:10px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-  header h1{font-size:16px;margin:0;font-weight:650}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:'Pretendard Variable','Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  header{position:sticky;top:0;z-index:20;background:var(--bar);border-bottom:1px solid var(--line);padding:11px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header h1{font-size:16px;margin:0;font-weight:700;display:flex;align-items:center;gap:9px}
+  header h1::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--accent);display:inline-block;flex:none}
   .asof{color:var(--mut);font-size:12px}
   .tabs{display:flex;gap:4px;margin-left:auto}
   .tabs button{background:transparent;border:1px solid transparent;color:var(--mut);padding:7px 14px;border-radius:8px;cursor:pointer;font-size:13px}
@@ -118,7 +120,7 @@
     <button data-tab="hist">히스토리</button>
     <button data-tab="scn">시나리오</button>
     <button data-tab="asset">자산군</button>
-    <button id="syncBtn" title="기기 간 동기화 코드">🔗 동기화</button>
+    <button id="syncBtn" title="기기 간 동기화 코드">동기화</button>
   </div>
 </header>
 <main>
@@ -219,7 +221,7 @@ function updateSyncBanner(){
   const b=document.getElementById('banner');
   if(ONLINE){ b.style.display='none'; }
   else { b.style.display='block';
-    b.innerHTML='⚠ 클라우드 동기화에 연결하지 못했습니다 — 인터넷을 확인하세요. 지금은 <b>이 기기(브라우저)에만</b> 저장됩니다.'; }
+    b.innerHTML='클라우드 동기화에 연결하지 못했습니다 — 인터넷을 확인하세요. 지금은 <b>이 기기(브라우저)에만</b> 저장됩니다.'; }
 }
 function openSyncUI(){
   const code=SYNC_CODE||'(없음)';
@@ -460,17 +462,17 @@ function renderCheck(){
     if(ind.id==='ism'){
       // 입력값이 2개 이상이면 미니 차트
       if(ser.points.length>=2){ const cv=ce('canvas'); box.appendChild(cv); setTimeout(()=>setupChart(cv, ser, '#b388e6'),0); }
-      const links=(MANUAL_LINKS.ism||[]).map(l=>`<a href="${l.url}" target="_blank" rel="noopener" class="srcbtn">${l.name} ↗</a>`).join('');
+      const links=(MANUAL_LINKS.ism||[]).map(l=>`<a href="${l.url}" target="_blank" rel="noopener" class="srcbtn">${l.name}</a>`).join('');
       const cur = (STORE.ism&&STORE.ism[curMonth]!=null) ? STORE.ism[curMonth] : '';
       box.appendChild(ce('div','manual-note',
-        `📊 <b>ISM은 직접 입력</b>(무료 자동데이터 없음). 아래 사이트에서 이번 달 값을 보고 적으세요 — 입력하면 위 차트·참고의견이 자동 계산됩니다.`
+        `<b>ISM은 직접 입력</b>(무료 자동데이터 없음). 아래 사이트에서 이번 달 값을 보고 적으세요 — 입력하면 위 차트·참고의견이 자동 계산됩니다.`
         + `<div class="ismrow"><b>${curMonth}</b> ISM PMI:
             <input type="number" step="0.1" id="ismInput" value="${cur}" placeholder="예: 54.0" style="width:90px">
             <button class="btn" id="ismSave">값 저장</button></div>`
         + (links?`<div class="srcrow">${links}</div>`:'')));
     }else if(ser.manual){
-      const links=(MANUAL_LINKS[ind.id]||[]).map(l=>`<a href="${l.url}" target="_blank" rel="noopener" class="srcbtn">${l.name} ↗</a>`).join('');
-      box.appendChild(ce('div','manual-note',`📊 <b>수동 확인 지표</b> — 무료 데이터 없음. 직접 확인 후 체크하세요.`+(links?`<div class="srcrow">${links}</div>`:'')));
+      const links=(MANUAL_LINKS[ind.id]||[]).map(l=>`<a href="${l.url}" target="_blank" rel="noopener" class="srcbtn">${l.name}</a>`).join('');
+      box.appendChild(ce('div','manual-note',`<b>수동 확인 지표</b> — 무료 데이터 없음. 직접 확인 후 체크하세요.`+(links?`<div class="srcrow">${links}</div>`:'')));
     }else{
       const cv=ce('canvas'); box.appendChild(cv);
       setTimeout(()=>setupChart(cv, ser, '#6ea8fe'),0);
@@ -720,7 +722,7 @@ function scnCard(s){
     <div style="margin:6px 0"><b>핵심변수:</b> ${s.key||'-'}</div>
     <div style="margin:6px 0">${(s.body||'').replace(/\n/g,'<br>')}</div>
     ${(s.chains&&s.chains.length)?'<div class="muted" style="margin:6px 0"><b>인과체인</b><br>'+s.chains.map(x=>'· '+x).join('<br>')+'</div>':''}
-    <div style="margin:6px 0;color:#f0c987"><b>⚠ 조기 신호:</b> ${(s.signal||'').replace(/\n/g,'<br>')}</div>
+    <div style="margin:6px 0;color:#f0c987"><b>조기 신호:</b> ${(s.signal||'').replace(/\n/g,'<br>')}</div>
     ${lensHtml?'<details><summary class="muted">렌즈 인풋</summary><div class="muted" style="margin-top:6px">'+lensHtml+'</div></details>':''}`;
   return c;
 }

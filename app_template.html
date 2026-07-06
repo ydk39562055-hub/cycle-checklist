@@ -7,11 +7,11 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root{
-    --bg:#0f1115; --bar:#0b0d11; --panel:#161a21; --panel2:#1c2029; --line:#262b36; --line2:#323845;
-    --txt:#e8eaee; --mut:#8b93a3; --mut2:#5d6470;
-    --침체:#e5544b; --회복:#e0a82e; --확장:#3fae6b; --둔화:#4a86e8;
-    --yes:#3fae6b; --no:#e5544b; --maybe:#8b93a3;
-    --accent:#6ea8fe;
+    --bg:#1a1512; --bar:#15100d; --panel:#221b15; --panel2:#241c15; --line:#2b231c; --line2:#32281e;
+    --txt:#e8dcc8; --mut:#a08f7d; --mut2:#8a7a68;
+    --침체:#c97a62; --회복:#cfa75e; --확장:#8fb381; --둔화:#c89468;
+    --yes:#8fb381; --no:#c97a62; --maybe:#a08f7d;
+    --accent:#c89468;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--txt);font-family:'Pretendard Variable','Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
@@ -23,7 +23,7 @@
   .tabs button{background:transparent;border:1px solid transparent;color:var(--mut);padding:7px 14px;border-radius:8px;cursor:pointer;font-size:13px}
   .tabs button.on{background:var(--panel2);color:var(--txt);border-color:var(--line)}
   main{max-width:1180px;margin:0 auto;padding:18px}
-  .banner{background:#3a2a12;border:1px solid #6a4d1c;color:#f0c987;padding:8px 12px;border-radius:8px;margin-bottom:14px;font-size:13px;display:none}
+  .banner{background:#2a2013;border:1px solid #5a4526;color:#cfa75e;padding:8px 12px;border-radius:8px;margin-bottom:14px;font-size:13px;display:none}
   .row{display:flex;gap:18px;align-items:flex-start}
   .col-main{flex:1;min-width:0}
   .col-side{width:340px;flex:none}
@@ -33,8 +33,8 @@
   select,input[type=month],input[type=text],textarea{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:7px;padding:7px 9px;font-family:inherit;font-size:13px}
   button.btn{background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 12px;border-radius:7px;cursor:pointer;font-size:13px}
   button.btn:hover{border-color:var(--mut2)}
-  button.primary{background:#27406e;border-color:#365a99;color:#dce7ff}
-  button.primary:hover{background:#2e4c82}
+  button.primary{background:#c89468;border-color:#d8a67e;color:#1a1512}
+  button.primary:hover{background:#d8a67e}
 
   .ind{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:16px}
   .ind h3{margin:0 0 2px;font-size:15px;display:flex;align-items:center;gap:8px}
@@ -50,17 +50,17 @@
   .ind h3{justify-content:flex-start}
   .period{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--mut)}
   .pbtn{background:var(--panel2);border:1px solid var(--line);color:var(--mut);padding:4px 9px;border-radius:6px;cursor:pointer;font-size:12px}
-  .pbtn.on{background:#27406e;border-color:#365a99;color:#dce7ff}
-  .manual-note{background:#2a2233;border:1px dashed #5a4a6a;border-radius:8px;padding:10px;color:#d3b8e6;font-size:12.5px;margin:8px 0}
+  .pbtn.on{background:#c89468;border-color:#c89468;color:#1a1512}
+  .manual-note{background:#241c15;border:1px dashed #4a3a2a;border-radius:8px;padding:10px;color:#cfc2b0;font-size:12.5px;margin:8px 0}
   .ismrow{display:flex;align-items:center;gap:8px;margin:10px 0;font-size:13px}
   .ismrow input{background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:6px;padding:5px 8px}
   .srcrow{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
-  a.srcbtn{display:inline-block;background:#3a2f4a;border:1px solid #6a5a80;color:#e7d8f5;text-decoration:none;padding:5px 10px;border-radius:7px;font-size:12px}
-  a.srcbtn:hover{background:#473a5c;border-color:#8a76a6}
+  a.srcbtn{display:inline-block;background:#2b231c;border:1px solid #4a3a2a;color:#e8dcc8;text-decoration:none;padding:5px 10px;border-radius:7px;font-size:12px}
+  a.srcbtn:hover{background:#32281e;border-color:#5a4636}
   .qs{margin-top:6px}
   .q{display:flex;gap:10px;align-items:flex-start;padding:7px 8px;border-radius:8px}
   .q:hover{background:var(--panel2)}
-  .q.disagree{outline:1px solid #7a5; outline-offset:-1px}
+  .q.disagree{outline:1px solid #8fb381; outline-offset:-1px}
   .q input[type=checkbox]{margin-top:3px;width:17px;height:17px;flex:none;accent-color:var(--accent)}
   .q .qbody{flex:1;min-width:0}
   .phase-chip{font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:5px;margin-right:6px;vertical-align:1px}
@@ -264,7 +264,7 @@ function fmtVal(v, ser){
 }
 
 function setupChart(cv, ser, color){
-  CHARTS.push({cv, ser, color:color||'#6ea8fe'});
+  CHARTS.push({cv, ser, color:color||'#c89468'});
   redrawChart(cv, ser, color, -1);
   cv.addEventListener('mousemove', e=>{
     const m=cv._meta; if(!m||!m.n) return;
@@ -279,7 +279,7 @@ function setupChart(cv, ser, color){
 function redrawAllCharts(){ CHARTS.forEach(c=>redrawChart(c.cv, c.ser, c.color, -1)); }
 
 function redrawChart(cv, ser, color, hoverIdx){
-  color = color||'#6ea8fe';
+  color = color||'#c89468';
   const full = (ser&&ser.points)||[];
   const points = full.slice(-CHART_MONTHS);
   const dpr = window.devicePixelRatio||1;
@@ -288,7 +288,7 @@ function redrawChart(cv, ser, color, hoverIdx){
   const ctx = cv.getContext('2d'); ctx.scale(dpr,dpr);
   ctx.clearRect(0,0,W,H);
   ctx.textBaseline='alphabetic';
-  if(points.length<2){ctx.fillStyle='#5d6470';ctx.font='12px sans-serif';ctx.fillText('데이터 없음',12,24);cv._meta={n:0};return;}
+  if(points.length<2){ctx.fillStyle='#8a7a68';ctx.font='12px sans-serif';ctx.fillText('데이터 없음',12,24);cv._meta={n:0};return;}
   const vals = points.map(p=>p.v);
   let mn=Math.min(...vals), mx=Math.max(...vals);
   if(mn===mx){mn-=1;mx+=1;}
@@ -299,12 +299,12 @@ function redrawChart(cv, ser, color, hoverIdx){
   const y=v=>padT+(H-padT-padB)*(1-(v-mn)/(mx-mn));
   // 추세 음영(최근 15개월, 보이는 구간 안에서)
   const shadeN=Math.min(15, n-1);
-  ctx.fillStyle='rgba(110,168,254,0.10)';
+  ctx.fillStyle='rgba(200,148,104,0.12)';
   ctx.fillRect(x(n-1-shadeN),padT,x(n-1)-x(n-1-shadeN),H-padT-padB);
   // 0선
-  if(mn<0&&mx>0){ctx.strokeStyle='#3a4150';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(padL,y(0));ctx.lineTo(W-padR,y(0));ctx.stroke();}
+  if(mn<0&&mx>0){ctx.strokeStyle='#3a2f26';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(padL,y(0));ctx.lineTo(W-padR,y(0));ctx.stroke();}
   // y축 라벨
-  ctx.fillStyle='#5d6470';ctx.font='10px sans-serif';ctx.textAlign='right';
+  ctx.fillStyle='#8a7a68';ctx.font='10px sans-serif';ctx.textAlign='right';
   [mx-pad,(mn+mx)/2,mn+pad].forEach(v=>{ctx.fillText(v.toFixed(Math.abs(v)>=100?0:1),padL-5,y(v)+3);});
   // x축 연도
   ctx.textAlign='center';
@@ -320,15 +320,15 @@ function redrawChart(cv, ser, color, hoverIdx){
   // 마우스 위치 크로스헤어 + 값 툴팁
   if(hoverIdx>=0 && hoverIdx<n){
     const hp=points[hoverIdx], hx=x(hoverIdx), hy=y(hp.v);
-    ctx.strokeStyle='rgba(230,232,236,0.25)';ctx.lineWidth=1;
+    ctx.strokeStyle='rgba(242,235,224,0.22)';ctx.lineWidth=1;
     ctx.beginPath();ctx.moveTo(hx,padT);ctx.lineTo(hx,H-padB);ctx.stroke();
-    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(hx,hy,3.5,0,7);ctx.fill();
+    ctx.fillStyle='#f2ebe0';ctx.beginPath();ctx.arc(hx,hy,3.5,0,7);ctx.fill();
     const label=hp.d+'  '+fmtVal(hp.v,ser);
     ctx.font='11px sans-serif'; const tw=ctx.measureText(label).width+12;
     let bx=hx+8; if(bx+tw>W-2) bx=hx-8-tw;
-    ctx.fillStyle='rgba(20,24,32,0.95)';ctx.strokeStyle='#3a4150';
+    ctx.fillStyle='rgba(21,16,9,0.95)';ctx.strokeStyle='#3a2f26';
     ctx.fillRect(bx,padT+2,tw,18);ctx.strokeRect(bx,padT+2,tw,18);
-    ctx.fillStyle='#e6e8ec';ctx.textAlign='left';ctx.fillText(label,bx+6,padT+15);
+    ctx.fillStyle='#e8dcc8';ctx.textAlign='left';ctx.fillText(label,bx+6,padT+15);
   }
 }
 
@@ -461,7 +461,7 @@ function renderCheck(){
     // 차트 or 수동
     if(ind.id==='ism'){
       // 입력값이 2개 이상이면 미니 차트
-      if(ser.points.length>=2){ const cv=ce('canvas'); box.appendChild(cv); setTimeout(()=>setupChart(cv, ser, '#b388e6'),0); }
+      if(ser.points.length>=2){ const cv=ce('canvas'); box.appendChild(cv); setTimeout(()=>setupChart(cv, ser, '#cfa75e'),0); }
       const links=(MANUAL_LINKS.ism||[]).map(l=>`<a href="${l.url}" target="_blank" rel="noopener" class="srcbtn">${l.name}</a>`).join('');
       const cur = (STORE.ism&&STORE.ism[curMonth]!=null) ? STORE.ism[curMonth] : '';
       box.appendChild(ce('div','manual-note',
@@ -475,7 +475,7 @@ function renderCheck(){
       box.appendChild(ce('div','manual-note',`<b>수동 확인 지표</b> — 무료 데이터 없음. 직접 확인 후 체크하세요.`+(links?`<div class="srcrow">${links}</div>`:'')));
     }else{
       const cv=ce('canvas'); box.appendChild(cv);
-      setTimeout(()=>setupChart(cv, ser, '#6ea8fe'),0);
+      setTimeout(()=>setupChart(cv, ser, '#c89468'),0);
     }
     // 문항
     const qs=ce('div','qs');
@@ -613,7 +613,7 @@ async function saveRecord(){
 }
 function toast(msg){
   const t=ce('div',null,msg);
-  t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#27406e;color:#dce7ff;padding:10px 16px;border-radius:8px;z-index:99;border:1px solid #365a99';
+  t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#c89468;color:#1a1512;padding:10px 16px;border-radius:8px;z-index:99;border:1px solid #d8a67e';
   document.body.appendChild(t); setTimeout(()=>t.remove(),3000);
 }
 
@@ -639,7 +639,7 @@ async function renderHist(){
         <span><b>${ym}</b> · 최다 <span class="pname ${r.top}">${r.top||'-'}</span></span>
         <span>CLI ${flag} · 뒤집은 판단 ${ (r.disagrees||[]).length }개</span></div>
       <div class="hist-bar">${segs}</div>`;
-    if(match===false) wrap.style.outline='1px solid #e5544b55', wrap.style.outlineOffset='3px', wrap.style.borderRadius='4px';
+    if(match===false) wrap.style.outline='1px solid #c97a6255', wrap.style.outlineOffset='3px', wrap.style.borderRadius='4px';
     body.appendChild(wrap);
   });
   // 범례
@@ -722,7 +722,7 @@ function scnCard(s){
     <div style="margin:6px 0"><b>핵심변수:</b> ${s.key||'-'}</div>
     <div style="margin:6px 0">${(s.body||'').replace(/\n/g,'<br>')}</div>
     ${(s.chains&&s.chains.length)?'<div class="muted" style="margin:6px 0"><b>인과체인</b><br>'+s.chains.map(x=>'· '+x).join('<br>')+'</div>':''}
-    <div style="margin:6px 0;color:#f0c987"><b>조기 신호:</b> ${(s.signal||'').replace(/\n/g,'<br>')}</div>
+    <div style="margin:6px 0;color:#cfa75e"><b>조기 신호:</b> ${(s.signal||'').replace(/\n/g,'<br>')}</div>
     ${lensHtml?'<details><summary class="muted">렌즈 인풋</summary><div class="muted" style="margin-top:6px">'+lensHtml+'</div></details>':''}`;
   return c;
 }
